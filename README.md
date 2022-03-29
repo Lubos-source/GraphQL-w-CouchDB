@@ -5,6 +5,12 @@
 - testování programu
 - výsledky testů
 - .ipnb příběh (dokumentace)
+- tvorba resolverů (root resolver, parent reoslver) (graphql - každá databáze stejné resolvery ale jiné tělo !)
+- část potřebná pro GraphQL pojmenovat --*user*GQL--
+- udělat databázi CouchDB a k ní přistupovat pomocí GraphQL (tam budou ty resolvery s rozdílnýma tělíčkama by četli naši DB)
+- vytvoření mutací do GQL pro vytváření dat do databáze
+- primárně operace *Create*, *Read* , *Update* !!
+- 
 
 # GraphQL-w-[CouchDB](https://github.com/apache/couchdb)
 
