@@ -4,6 +4,7 @@
 - navrhnutí programu
 - testování programu
 - výsledky testů
+- .ipnb příběh (dokumentace)
 
 # GraphQL-w-[CouchDB](https://github.com/apache/couchdb)
 
@@ -19,4 +20,8 @@
     - [ ] druhy ukol .... ()
     - [ ] treti ..... ()
 - [ ] testování programu ()
+- [ ] projektový den (7.4.2022)
+- [ ] projektový den alfa verze (5.5.2022)
+- [ ] projektový den beta verze (8.6.2022)
+- [ ] uzavření projektu (23.6.2022)
 
