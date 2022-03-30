@@ -31,4 +31,6 @@
 - [ ] projektový den beta verze (8.6.2022)
 - [ ] uzavření projektu (23.6.2022)
 
-Odkaz na stažení klienta: https://couchdb.apache.org/#download
+Odkaz na stažení klienta [místní apache CouchDB](https://couchdb.apache.org/#download)
+
+Odkaz na stažení a instalaci [CoachDB do dockeru](https://hub.docker.com/_/couchdb)
