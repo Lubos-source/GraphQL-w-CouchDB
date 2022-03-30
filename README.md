@@ -1,15 +1,20 @@
 ### Úkoly
 
 - časová osa
+- Dokončit konfiguraci databáze v DOCKERU! - If you choose not to use the Cluster Setup wizard or API, you will have to **create** *_global_changes*, *_replicator* and *_users* **manually!!**
 - navrhnutí programu
-- testování programu
-- výsledky testů
-- .ipnb příběh (dokumentace)
+
+
 - tvorba resolverů (root resolver, parent reoslver) (graphql - každá databáze stejné resolvery ale jiné tělo !)
 - část potřebná pro GraphQL pojmenovat --*user*GQL--
 - udělat databázi CouchDB a k ní přistupovat pomocí GraphQL (tam budou ty resolvery s rozdílnýma tělíčkama by četli naši DB)
 - vytvoření mutací do GQL pro vytváření dat do databáze
 - primárně operace *Create*, *Read* , *Update* !!
+
+
+- testování programu
+- výsledky testů
+- .ipnb příběh (dokumentace)
 - 
 
 # GraphQL-w-[CouchDB](https://github.com/apache/couchdb)
