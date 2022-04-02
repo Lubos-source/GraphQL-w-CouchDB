@@ -1,7 +1,7 @@
 ### Úkoly
 
 - časová osa
-- Dokončit konfiguraci databáze v DOCKERU! - If you choose not to use the Cluster Setup wizard or API, you will have to **create** *_global_changes*, *_replicator* and *_users* **manually!!**
+- Dokončit [konfiguraci databáze v DOCKERU](https://docs.couchdb.org/en/3.2.0/setup/single-node.html)! - If you choose not to use the Cluster Setup wizard or API, you will have to **create** *_global_changes*, *_replicator* and *_users* **manually!!**
 - navrhnutí programu
 
 
