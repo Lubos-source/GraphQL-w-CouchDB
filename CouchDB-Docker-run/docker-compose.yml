@@ -5,10 +5,32 @@ services:
     image: apache/couchdb
     restart: always
     ports:
-      - 31111:5984 
+      - 31111:5984
     environment:
       COUCHDB_USER: admin
       COUCHDB_PASSWORD: admin
     volumes:
       - ${CD}/couchdata:/opt/couchdb/data
       - ${CD}/couchinit:/opt/couchdb/etc/local.d
+
+  initializer:
+    image: curlimages/curl
+    deploy:
+      restart_policy:
+        condition: on-failure
+    depends_on:
+      - couch
+    command: ["sh","-c","sleep 15 && curl -u admin:admin -X PUT http://127.0.0.1:31111/testdata"]
+
+
+####################################################
+  #python_fastapi:
+  #  image: python_fastapi
+  #  build:
+  #    context: ./pyf
+  #  environment: 
+  #    - COUCHDB_USER=admin
+  #    - COUCHDB_PASSWORD=admin
+  #    - COUCHDB_DB=data
+  #  depends_on:
+  #    - couch
