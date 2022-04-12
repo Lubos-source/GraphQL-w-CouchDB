@@ -23,14 +23,17 @@ services:
     command: ["sh","-c","sleep 15 && curl -u admin:admin -X PUT http://127.0.0.1:31111/testdata"]
 
 
-####################################################
-  #python_fastapi:
-  #  image: python_fastapi
-  #  build:
-  #    context: ./pyf
-  #  environment: 
-  #    - COUCHDB_USER=admin
-  #    - COUCHDB_PASSWORD=admin
-  #    - COUCHDB_DB=data
-  #  depends_on:
-  #    - couch
+  python_fastapi:
+    image: python_fastapi
+    build:
+      context: ./gqlapp
+    environment: 
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=admin
+      - COUCHDB_DB=data
+    ports:
+      - 32222:8000
+    volumes:
+      - ./gqlapp:/app
+    depends_on:
+      - couch
