@@ -1,0 +1,19 @@
+def crudUserGet(db: SessionMaker, id: int):
+    return db.query(UserModel).filter(UserModel.id==id).first()
+
+def crudUserGetAll(db: SessionMaker, skip: int = 0, limit: int = 100):
+    return db.query(UserModel).offset(skip).limit(limit).all()
+
+def crudUserCreate(db: SessionMaker, user):
+    userRow = UserModel(name=user.name)
+    db.add(userRow)
+    db.commit()
+    db.refresh(userRow)
+    return userRow
+
+def crudUserUpdate(db: SessionMaker, user):
+    userToUpdate = db.query(UserModel).filter(UserModel.id==user.id).first()
+    userToUpdate.name = user.name if user.name else userToUpdate.name
+    db.commit()
+    db.refresh(userToUpdate)
+    return userToUpdate
