@@ -1,22 +1,17 @@
-from starlette.graphql import GraphQLApp
 
-from dbInit import get_bucket
+###########################################################x
+##########################################################
+#############################################################
 
-from DatabaseModel.myDevTools import *
-from DatabaseModel import randomData
-from DatabaseModel.models import PersonModel, LessonModel, StudentModel, ProgramModel, GroupModel, SubjectModel, SemesterModel, GroupTypeModel, LessonTypeModel, RoomModel, BuildingModel, AreaModel
+#import conect
+from conect import conectToCouch
 
-import dbInit
-
+#from starlette.graphql import GraphQLApp
 from fastapi import FastAPI
-import graphqlapp
-#import svgapp
-
-#from fastapi.middleware.cors import CORSMiddleware
-
+import graphqlaplication as gqlapp
 
 def buildApp():
-    Session = get_bucket()
+    Session = conectToCouch()
     
     def prepareSession():#Session=Session): # default parameters are not allowed here
         """generator for creating db session encapsulated with try/except block and followed session.commit() / session.rollback()
@@ -41,10 +36,10 @@ def buildApp():
     #origins = ["http://localhost:3000", "http://localhost:50055",]
     #app.add_middleware(CORSMiddleware, allow_origins=origins, allow_credentials=True, allow_methods=["*"], allow_headers=["*"],)
     
-    graphqlapp.attachGraphQL(app, prepareSession)
+    gqlapp.attachGraphQL(app, prepareSession)
     #svgapp.attachSVGApp(app)
     return app
 
-dbInit.InitAndRandomize()
+#dbInit.InitAndRandomize()
 print('All initialization is done')
 app = buildApp()

@@ -1,4 +1,4 @@
-from functools import cache
+#from functools import cache
 
 from sqlalchemy.orm import relationship
 from sqlalchemy import Column, String, BigInteger, Integer, Date, ForeignKey, Sequence, Table
@@ -7,7 +7,7 @@ from DatabaseModel.sqlalchemyCore import GetUnitedSequence, GetDeclarativeBase
 
 Base = GetDeclarativeBase()
 
-@cache
+#@cache
 def CreateModels(Base=Base):
     class PersonModel(Base):
         __tablename__ = "people"

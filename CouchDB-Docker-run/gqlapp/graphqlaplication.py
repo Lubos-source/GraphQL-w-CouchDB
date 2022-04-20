@@ -1,4 +1,3 @@
-from sqlalchemy.sql.sqltypes import DATE
 from graphene import ObjectType, String, Int, Field, ID, List, Date, DateTime, Mutation, Boolean
 from graphene import Schema as GSchema
 
@@ -8,6 +7,7 @@ import graphene
 from DatabaseModel.models import PersonModel, LessonModel, StudentModel, ProgramModel, GroupModel, SubjectModel, SemesterModel, GroupTypeModel, LessonTypeModel, RoomModel, BuildingModel, AreaModel
 
 from contextlib import contextmanager
+
 
 def attachGraphQL(app, sessionFunc, bindPoint='/gql'):
     """Attaches a Swagger endpoint to a FastAPI
@@ -361,12 +361,6 @@ def attachGraphQL(app, sessionFunc, bindPoint='/gql'):
 
     #graphql_app = GraphQLApp(schema=localSchema(query=Query, mutation=Mutations))
     graphql_app = GraphQLApp(schema=localSchema(query=Query))
+    
+    #app.add_route('/gql', graphql_app)
     app.add_route(bindPoint, graphql_app)
-
-# ZEPTAT SE NA ROZDÍL MEZI 1N A MN PŘI ŘEŠENÍ RELACÍ V GRAPHQL
-# JAK U PROMĚNNÝCH TAK U FUNKCÍ
-
-# ZEPTAT SE NA ROZDÍL U FUNKCÍ(RESOLVE) A PROMĚNNÝCH MEZI 1->N A N->1
-
-# ZEPTAT SE NA lesson = Field(Lesson, id = ID(required=True)) JAK VĚDĚT CO JE REQUIRED 
-# CO NENÍ REQUIRED A PODLE ČEHO SKLÁDAT QUERIES

@@ -2,25 +2,25 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Sequence
-from functools import cache
+#from functools import cache
 import json
 import os
 
 #DATABASE_URI = "postgresql+psycopg2://root:heslo1234@uo_database:5432/data"
 
-@cache
+#@cache
 def GetDeclarativeBase():
     return declarative_base()
 
 
 
-@cache
+#@cache
 def GetUnitedSequence(name):
     seqName = name + "_id_seq"
     unitedSequence = Sequence(seqName)
     return unitedSequence
 
-@cache
+#@cache
 def initEngine(connectionstring):
     """Creates engine once and cache the result
 
@@ -37,7 +37,7 @@ def initEngine(connectionstring):
     engine = create_engine(connectionstring, pool_recycle=360) # see https://docs.sqlalchemy.org/en/14/core/pooling.html
     return engine
 
-@cache
+#@cache
 def initSession(connectionstring):
     """Creates callable Session once and cache the result
 
