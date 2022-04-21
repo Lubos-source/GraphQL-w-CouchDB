@@ -62,9 +62,67 @@ couchDbLogin()
 printJson(couchDbAPICall(location = ''))
 
 
+##Získání informaci z databaze:
+
 data = couchDbAPICall('_session', 'GET')
 print('_session')
 printJson(data)
 dbs = couchDbAPICall('_all_dbs', 'GET')
 print('_all_dbs')
+printJson(dbs)
+
+
+###Vytvoreni databaze:
+
+dbs = couchDbAPICall('my_db', 'PUT')   #curl -X PUT http://servername:port/my_db
+print('Created database')
+printJson(dbs)
+dbs = couchDbAPICall('_all_dbs', 'GET')#curl -X GET http://servername:port/_all_dbs
+print('_all_dbs')
+printJson(dbs)
+dbs = couchDbAPICall('my_db', 'GET')   #curl -X GET http://servername:port/next_db
+print('Retrieve info about database')
+printJson(dbs)
+dbs = couchDbAPICall('my_db', 'DELETE')#curl -X DELETE http://servername:port/my_db
+print('Delete database')
+printJson(dbs)
+dbs = couchDbAPICall('_all_dbs', 'GET')#curl -X GET http://servername:port/_all_dbs
+print('_all_dbs')
+printJson(dbs)
+
+### Vytvoreni databaze pro experimenty:
+
+dbs = couchDbAPICall('data', 'PUT')
+printJson(dbs)
+
+### Vlozeni dokumentu do databaze
+dokument = {'data': 'informace', 'cislo': 35}
+docresult = couchDbAPICall('data', 'POST', dokument)
+print('result')
+printJson(docresult)
+
+### Zpristupneni vlozeneho dokumentu:
+
+docid = docresult['id']
+dbs = couchDbAPICall('data/' + docid, 'GET')
+print('result')
+printJson(dbs)
+
+
+### Seznam vsech dokumentu v databazi:
+
+view = couchDbAPICall('data/_all_docs', 'GET')
+print('result')
+printJson(view)
+
+
+query = {'map' : 'function(doc){emit(doc.cislo)}'}
+view = couchDbAPICall('data/_temp_view', 'POST', query)
+print('result')
+printJson(view)
+
+
+### Odstraneni databaze
+
+dbs = couchDbAPICall('data', 'DELETE')
 printJson(dbs)
