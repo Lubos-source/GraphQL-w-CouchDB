@@ -10,4 +10,3 @@ def conectToCouch():
     couchserver.resource.credentials = ("admin", "admin")
 
     return couchserver
-

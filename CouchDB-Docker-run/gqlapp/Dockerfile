@@ -1,7 +1,7 @@
 # For more information, please refer to https://aka.ms/vscode-docker-python
 FROM python:3.9-slim-buster
 
-#LABEL maintainer="Couchbase" ?????
+#LABEL maintainer="Couchbase" ????
 
 EXPOSE 8000
 
@@ -13,8 +13,8 @@ ENV PYTHONUNBUFFERED=1
 
 # Install pip requirements
 COPY requirements.txt .
-RUN python -m pip install couchdb
-RUN python -m pip install -r requirements.txt
+RUN pip install -r requirements.txt
+RUN pip install couchdb
 
 WORKDIR /app
 COPY . /app
