@@ -1,21 +1,23 @@
+### Aktualni chyby
+- Při spuštění run.bat --> chyba v dockeru import module 'couchdb', ale při spuštění lokálně vše all right. (asi nejak spatne nainstalovane requirments ?)
+- prozatimní řešení : spouštět FastAPI server lokálně (příkaz do terminálu ve složce:    uvicorn main:app --reload)<br/>
+<br/>
+
+- GQL chyba načtení schémat ---> udělat znovu schémata, modely, queries a resolvery !!!
+
 ### Úkoly
 
 - časová osa
 - Dokončit [konfiguraci databáze v DOCKERU](https://docs.couchdb.org/en/3.2.0/setup/single-node.html)! 
 - navrhnutí programu
-
-
 - tvorba resolverů (root resolver, parent reoslver) (graphql - každá databáze stejné resolvery ale jiné tělo !)
 - část potřebná pro GraphQL pojmenovat --*user*GQL--
 - udělat databázi CouchDB a k ní přistupovat pomocí GraphQL (tam budou ty resolvery s rozdílnýma tělíčkama by četli naši DB)
 - vytvoření mutací do GQL pro vytváření dat do databáze
 - primárně operace *Create*, *Read* , *Update* !!
-
-
 - testování programu
 - výsledky testů
 - .ipnb příběh (dokumentace)
-- 
 
 # GraphQL-w-[CouchDB](https://github.com/apache/couchdb)
 
@@ -37,6 +39,3 @@
 - [ ] projektový den beta verze (8.6.2022)
 - [ ] uzavření projektu (23.6.2022)
 
-Odkaz na stažení klienta [místní apache CouchDB](https://couchdb.apache.org/#download)
-
-Odkaz na stažení a instalaci [CoachDB do dockeru](https://hub.docker.com/_/couchdb)
