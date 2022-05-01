@@ -1,6 +1,8 @@
 from graphene import ObjectType, InputObjectType, Mutation, String, Int, Field
 from conect import find_first, del_documents, update_user, insert_pymodel, insert_document, print_all, create_database, conectToCouch
 
+from datetime import datetime
+from couchdb.mapping import Document, TextField, IntegerField, DateTimeField
 
 class User(ObjectType):
     name=TextField()
@@ -20,7 +22,9 @@ class UserCreate(Mutation):
     user = Field(User)
 
     def mutate(root, info, user_data=None):
-        loop.run_until_complete(insert_pymodel(user_data))
+        #loop.run_until_complete(insert_pymodel(user_data))
+        insert_document(create_database('gqltest', 0),'dokumenttestgql')
+
         print("Created")
         user = User(
             name=user_data.name,
@@ -36,7 +40,7 @@ class UserUpdate(Mutation):
     user = Field(User)
 
     def mutate(root, info, user_data=None, new_data=None):
-        loop.run_until_complete(do_update(user_data, new_data))
+        #loop.run_until_complete(do_update(user_data, new_data))
         print("Updated")
         user = User(
             name=new_data.name,
@@ -51,7 +55,7 @@ class UserDelete(Mutation):
     user = Field(User)
 
     def mutate(root, info, user_data=None):
-        loop.run_until_complete(do_delete_many(user_data))
+        #loop.run_until_complete(do_delete_many(user_data))
         print("Deleted")
         user = User(
             name=user_data.name,

@@ -2,11 +2,13 @@ from graphene import ObjectType, Schema, String, Int, Field, List
 from pydantic import BaseModel
 from models import User, UserCreate, UserUpdate, UserDelete
 
+from conect import find_first, del_documents, update_user, insert_pymodel, insert_document, print_all, create_database, conectToCouch
+
 
 class Mutation(ObjectType):
 	user_create = UserCreate.Field()
-	user_update = UserUpdate.Field()
-	user_delete = UserDelete.Field()
+	#user_update = UserUpdate.Field()
+	#user_delete = UserDelete.Field()
 
 class Query(ObjectType):
 	fill_db = String()
@@ -16,15 +18,17 @@ class Query(ObjectType):
 	
 	''' Resolvers perform action, when the above is called '''
 	def resolve_fill_db(root, info):
-		loop.run_until_complete(do_insert_random())
-		loop.run_until_complete(print_all())
+		#loop.run_until_complete(do_insert_random())
+		#loop.run_until_complete(print_all())
+		insert_document(create_database('resolverfill', 0),'filldbresolver')
+		print_all(create_database('resolverfill', 0))
 		return "Filled"
 
 	def resolve_user(root, info, name):
-		return loop.run_until_complete(do_find_one(name))
+		return #loop.run_until_complete(do_find_one(name))
 
 	def resolve_user_all(root, info, name):
-		return loop.run_until_complete(do_find(name))
+		return #loop.run_until_complete(do_find(name))
 
 	def resolve_user2(root, info, name):
-		return loop.run_until_complete(do_find_one(name))
+		return #loop.run_until_complete(do_find_one(name))

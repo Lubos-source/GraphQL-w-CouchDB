@@ -2,9 +2,9 @@ import urllib.request, json
 from urllib.parse import urlencode
 from base64 import b64encode
 import getpass
-from platform import python_version
+#from platform import python_version
 
-print(python_version())
+#print(python_version())
 serverAddress = 'http://127.0.0.1:31005/'
 userName = "root"
 password = "example"
@@ -59,6 +59,7 @@ def couchDbAPICall(location, method = 'GET', data = None):
     return json.loads(result)
 
 couchDbLogin()
+#print(" \nco je v couchDBLogin: ",couchDbLogin())
 #print("printJSON funkce: \n")
 printJson(couchDbAPICall(location = ''))
 #print("\nkonec funkce \n")

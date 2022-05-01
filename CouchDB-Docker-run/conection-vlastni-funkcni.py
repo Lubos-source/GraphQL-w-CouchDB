@@ -4,8 +4,13 @@ import couchdb
 
 ###---------Connection:------------------------###
 
+couchserver = couchdb.Server(url='http://root:example@127.0.0.1:31005/')
+couchserver.resource.credentials = ("root", "example")
+
+"""
 couchserver = couchdb.Server(url='http://admin:admin@127.0.0.1:31111/')
 couchserver.resource.credentials = ("admin", "admin")
+"""
 
 ###-------Test vypisu databaze z couchdb:------###
 
@@ -33,7 +38,7 @@ dbname = "mydb"
 if dbname in couchserver:
     del couchserver[dbname]
 else:
-    print("Databaze neexistuje")
+    print("Databaze neexistuje, nelze ji odstranit")
 
 print("\nDatabaze po delete:")
 for dbname in couchserver:
