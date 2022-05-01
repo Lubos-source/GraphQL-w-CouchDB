@@ -29,12 +29,13 @@
 - [x] časová osa (29.03.2022)
 - [x] návrh programu ()
 - [x] Vytvořeni CouchDB (02.04.2022) (listening on: localhost:31111/_utils)
-- [ ] tvorba programu ()
-    - [ ] prvni ukol tvorby ()
-    - [ ] druhy ukol .... ()
-    - [ ] treti ..... ()
-- [ ] testování programu ()
-- [ ] projektový den (7.4.2022)
+- [x] tvorba programu ()
+    - [x] Nainstalovani + konfigurace databaze couchDB v dockeru
+    - [x] Propojeni s databazi + manipulace s ni
+    - [x] Vytvoření čistého GQL pomocí FastAPI nebo jiného rozhraní
+    - [ ] Vytvoření schémat, modelů, queries, mutations do GQL aplikace
+- [x] testování programu (docker databaze✔️, propojeni s databazi✔️, GQL docker✔️, ...)
+- [x] projektový den (7.4.2022)
 - [ ] projektový den alfa verze (5.5.2022)
 - [ ] projektový den beta verze (8.6.2022)
 - [ ] uzavření projektu (23.6.2022)
