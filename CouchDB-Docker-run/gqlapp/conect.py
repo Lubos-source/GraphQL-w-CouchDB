@@ -16,8 +16,8 @@ definovani funkci pro praci s databazi
 
 
 def conectToCouch():
-    couchserver = couchdb.Server(url='http://root:example@127.0.0.1:31005/')
-    couchserver.resource.credentials = ("root", "example")
+    couchserver = couchdb.Server(url='http://root:example@couch:5984/')
+    couchserver.resource.credentials = ("admin", "admin")
 
     return couchserver
 
