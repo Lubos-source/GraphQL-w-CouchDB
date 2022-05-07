@@ -1,6 +1,6 @@
 from graphene import ObjectType, Schema, String, Int, Field, List
-from pydantic import BaseModel
-from models import User, UserCreate, UserUpdate, UserDelete
+#from pydantic import BaseModel
+from models import User, UserCreate#, UserUpdate, UserDelete
 
 from conect import find_first, del_documents, update_user, insert_pymodel, insert_document, print_all, create_database, conectToCouch
 
@@ -13,22 +13,23 @@ class Mutation(ObjectType):
 class Query(ObjectType):
 	fill_db = String()
 	user = Field(User, name=String(required=True))
-	user_all = List(User, name=String(required=True))
-	user2 = String(name=String())
+	#user_all = List(User, name=String(required=True))
+	#user2 = String(name=String())
 	
 	''' Resolvers perform action, when the above is called '''
 	def resolve_fill_db(root, info):
 		#loop.run_until_complete(do_insert_random())
 		#loop.run_until_complete(print_all())
-		insert_document(create_database('resolverfill', 0),'filldbresolver')
-		print_all(create_database('resolverfill', 0))
+		insert_document('dokumentZresolveu','filldbresolver')
+		print_all()
 		return "Filled"
 
 	def resolve_user(root, info, name):
-		return #loop.run_until_complete(do_find_one(name))
-
+		return find_first(name)
+"""
 	def resolve_user_all(root, info, name):
 		return #loop.run_until_complete(do_find(name))
 
 	def resolve_user2(root, info, name):
 		return #loop.run_until_complete(do_find_one(name))
+"""

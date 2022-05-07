@@ -23,7 +23,7 @@ class UserCreate(Mutation):
 
     def mutate(root, info, user_data=None):
         #loop.run_until_complete(insert_pymodel(user_data))
-        insert_document(create_database('gqltest', 0),'dokumenttestgql')
+        insert_document('dokumentesssstt','dokumenttestgql')
 
         print("Created")
         user = User(
@@ -31,7 +31,7 @@ class UserCreate(Mutation):
             age=user_data.age
         )
         return UserCreate(user=user)
-
+"""
 class UserUpdate(Mutation):
     class Arguments:
         user_data = UserInput(required=True)
@@ -62,3 +62,4 @@ class UserDelete(Mutation):
             group=user_data.group
         )
         return UserDelete(user=user)
+"""

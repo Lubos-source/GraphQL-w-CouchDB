@@ -1,6 +1,11 @@
 
 import couchdb
 
+from datetime import datetime
+from couchdb.mapping import Document, TextField, IntegerField, DateTimeField
+
+from graphqlaplication import getFullRndDoc
+
 ###---------Connection:------------------------###
 """
 definovani funkci pro praci s databazi
@@ -16,15 +21,12 @@ definovani funkci pro praci s databazi
 
 
 def conectToCouch():
-    couchserver = couchdb.Server(url='http://root:example@couch:5984/')
+    couchserver = couchdb.Server(url='http://admin:admin@couch:5984/')
     couchserver.resource.credentials = ("admin", "admin")
 
     return couchserver
 
 ###mapování dokumentu do python objektu:
-
-from datetime import datetime
-from couchdb.mapping import Document, TextField, IntegerField, DateTimeField
 
 class UserDataInput(Document):
 	name=TextField()
@@ -39,7 +41,6 @@ class UserDataShow(Document):
 
 
 ######---tvorba-funkcipro-komunikaci-s-databazi---#########
-
 def create_database(dbname,n=0):
 	dbname=dbname
 	databaze=conectToCouch()
@@ -55,9 +56,17 @@ def create_database(dbname,n=0):
 
 	return databaze[dbname]
 
-def print_all(dbarg):
-	print("\nVypis vsech dokumentu v : "+ str(dbarg))
-	db=dbarg
+
+# vytvoreni databaze
+db=create_database('testovaci_databaze',0)
+
+def insert_random_data():
+	result= db.testovaci_databaze.insert_many(
+		[getFullRndDoc() for i in range(6)]
+	)
+
+def print_all():
+	print("\nVypis vsech dokumentu v : "+ str(db))
 	for dokumenty in db:
 		print("\ndokument ID: " + dokumenty)
 		doc=db[dokumenty]
@@ -65,31 +74,30 @@ def print_all(dbarg):
 		for row in doc:
 			print("--radek: \""+str(row) +"\" --obsah: \""+str(doc[row])+"\"") 
 
-def insert_document(dbarg, docID):
+def insert_document(dokum, docID):
 	documentid=docID
-	db=dbarg
+	document=dokum
 	if documentid in db:
 		print("\nDokument s ID '"+documentid+"' jiz existuje v databazi '"+ str(db)+"'")
 		doc_id=documentid
 	else:
 		print("\nVkladam dokument '"+ documentid +"' do databaze '"+ str(db)+"'")
-		db.save({'_id':documentid,'type': 'Manualni', 'name': 'BezPYmodelu-vlastni-ID'})
+		#db.save({'_id':documentid, document})
+		result= db.testovaci_databaze.insert_one(document)
+		return result
 
-def insert_pymodel(dbname):
-	db=create_database(dbname)
+def insert_pymodel():
 	person=UserDataInput(name="Johnny Deep", age="42")
 	person.store(db)
 
-def update_user(dbarg,docid):
+def update_user(newjmeno,docid):
 	####UPDATE DOCUMENT####
-	db=dbarg
 	person = UserDataInput.load(db, docid)
-	person.name = 'Zmena Jmena :)'
+	person.name = newjmeno
 	person.store(db)
 	#print(person.name)
 
-def del_documents(dbarg):
-	db=dbarg
+def del_documents():
 	print("\nodstranuji veskere dokumenty v databazi '"+str(db)+"' ...")
 	
 	for dok in db:
@@ -100,10 +108,10 @@ def del_documents(dbarg):
 
 
 
-def find_first(dbarg,docname):
-	for dokumenty in dbarg:
+def find_first(docname):
+	for dokumenty in db:
 		if dokumenty==docname:
-			doc=dbarg[dokumenty]
+			doc=db[dokumenty]
 			print("\nV dokumentu (ID: '"+dokumenty+"') se nachazi:")
 			for row in doc:
 				print("--radek: \""+str(row) +"\" --obsah: \""+str(doc[row])+"\"")
@@ -120,7 +128,7 @@ db=create_database('funkcetest', 1) #('nazevdatabaze', 1-zapnuti komentare)
 
 #update_user(db,"updatedoc")
 
-print_all(db)
+print_all()
 
 #find_first(db,"faffe2acc80cce5bf5d747dda1004dd1")
 
