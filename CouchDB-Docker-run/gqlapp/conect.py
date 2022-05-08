@@ -1,4 +1,5 @@
 
+from email.policy import default
 import couchdb
 
 from datetime import datetime
@@ -29,15 +30,17 @@ def conectToCouch():
 ###mapování dokumentu do python objektu:
 
 class UserDataInput(Document):
-	name=TextField()
-	age=IntegerField()
-	added=DateTimeField(default=datetime.now)
+	_id= TextField()
+	title=TextField()
+	instructor=IntegerField()
+	publish_date=DateTimeField(default=datetime.now)
 
 
 class UserDataShow(Document):
-	name=TextField()
-	age=IntegerField()
-	added=DateTimeField()
+	_id= TextField()
+	title=TextField()
+	instructor=IntegerField()
+	publish_date=DateTimeField()
 
 
 ######---tvorba-funkcipro-komunikaci-s-databazi---#########
@@ -67,12 +70,18 @@ def insert_random_data():
 
 def print_all():
 	print("\nVypis vsech dokumentu v : "+ str(db))
+	vysledek=list()
 	for dokumenty in db:
 		print("\ndokument ID: " + dokumenty)
+		vysledek.append('id')
+		vysledek.append(dokumenty)
 		doc=db[dokumenty]
 		print("V dokumentu (ID: '"+dokumenty+"') se nachazi:")
 		for row in doc:
-			print("--radek: \""+str(row) +"\" --obsah: \""+str(doc[row])+"\"") 
+			print("--radek: \""+str(row) +"\" --obsah: \""+str(doc[row])+"\"")
+			vysledek.append(str(row))
+			vysledek.append(str(doc[row]))
+	return vysledek
 
 def insert_document(dokum, docID):
 	documentid=docID
@@ -86,8 +95,8 @@ def insert_document(dokum, docID):
 		result= db.testovaci_databaze.insert_one(document)
 		return result
 
-def insert_pymodel():
-	person=UserDataInput(name="Johnny Deep", age="42")
+def insert_pymodel(ttl="testdefault"):
+	person=UserDataInput(_id="id#"+str(datetime.now())+"#id",title=ttl, instructor="42")
 	person.store(db)
 
 def update_user(newjmeno,docid):
@@ -122,13 +131,16 @@ def find_first(docname):
 
 
 db=create_database('funkcetest', 1) #('nazevdatabaze', 1-zapnuti komentare)
-
+insert_pymodel("Johny")
+insert_pymodel("test")
+insert_pymodel()
 #insert_pymodel('funkcetest')
 #insert_document(db,'dokumentID')
 
 #update_user(db,"updatedoc")
 
 print_all()
+
 
 #find_first(db,"faffe2acc80cce5bf5d747dda1004dd1")
 
