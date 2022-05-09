@@ -1,5 +1,9 @@
+from dis import Instruction
+from typing_extensions import Required
+from unittest import result
 import graphene
 from fastapi import FastAPI
+#from numpy import require
 from starlette.graphql import GraphQLApp
 
 
@@ -11,32 +15,47 @@ from conect import print_all,insert_document
 
 
 ###zkouska tvorby GQL - zatim nefunguje -_-
+"""
+class CreateCourseInput(graphene.InputObjectType):
+    _id=String(required=True)
+    title=String(required=False)
+    instructor=String(required=False)
+
+    def asDict(self):
+        return {
+            '_id':self._id,
+            'title':self.title,
+            'instructor':self.instructor
+        }
+"""
+
 
 class CreateCourse(Mutation):
-    course = Field(CourseType)
+    #class Arguments:
+       # course = CreateCourseInput(required=True)
 
-    class Arguments:
-        _id = String(required=True)
-        title = String(required=True)
-        instructor = String(required=True)
+    ok=graphene.Boolean()
+    result=graphene.Field(CourseType)
 
-    def mutate(self, info, id, title, instructor):
-        course_list = None
-        course_list.insert_document({"id": id, "title": title, "instructor": instructor},"ajdii")
-        return CreateCourse(course=course_list[-1])
+    def mutate(parent, info, course):
+        course_list = {}
+        course_list={"_id":"ajdiNatvrdo", "title": "titleTestNaTvrdo", "instructor": "instructorTvrdej"}
+        insert_document(course_list,"NejakyID222")
+        return CreateCourse(ok=True, result=course_list)
+    pass
 
 
 
 class Query(ObjectType):
-    course_list = None
-    get_course = List(CourseType)
-    def resolve_get_course(self, info, **kwargs):
+    course_list = {}
+    get_course = Field(CourseType, _id=graphene.ID(required=True))
+    def resolve_get_course(self, **kwargs):
+#zatim vrati posledni dokument v databazi - ale funguje :) chyba ve funkci print_all - prepisuje dictionary. Ale list dictionaries ani dict in dict nefunguje musi se to nejak vyresit
         course_list = print_all()
         return course_list
     
-    #return course_list
 
-class Mutation(ObjectType):
+class Mutations(ObjectType):
     create_course = CreateCourse.Field()
 
 
@@ -52,4 +71,4 @@ async def root():
 #app.add_route("/graphql", GraphQLApp(schema=graphene.Schema(query=Query, mutation=Mutation)))
 
 
-app.add_route("/graphql", GraphQLApp(schema=Schema(query=Query, mutation=Mutation)))
+app.add_route("/graphql", GraphQLApp(schema=Schema(query=Query, mutation=Mutations)))

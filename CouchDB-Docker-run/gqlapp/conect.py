@@ -61,7 +61,7 @@ def create_database(dbname,n=0):
 
 
 # vytvoreni databaze
-db=create_database('testovaci_databaze',0)
+db=create_database('funkcetest',0)
 
 def insert_random_data():
 	result= db.testovaci_databaze.insert_many(
@@ -70,18 +70,41 @@ def insert_random_data():
 
 def print_all():
 	print("\nVypis vsech dokumentu v : "+ str(db))
-	vysledek=list()
+	vysledek={}
 	for dokumenty in db:
-		print("\ndokument ID: " + dokumenty)
-		vysledek.append('id')
-		vysledek.append(dokumenty)
+		#print("\ndokument ID: " + dokumenty)
+		#vysledek.append('id')
+		#vysledek.append(dokumenty)
 		doc=db[dokumenty]
-		print("V dokumentu (ID: '"+dokumenty+"') se nachazi:")
+		print("V dokumentu (ID: '"+dokumenty+"') se nachazi: ")
 		for row in doc:
 			print("--radek: \""+str(row) +"\" --obsah: \""+str(doc[row])+"\"")
-			vysledek.append(str(row))
-			vysledek.append(str(doc[row]))
+			vysledek[str(row)] = str(doc[row])
+			#vysledek.append(str(doc[row]))
 	return vysledek
+
+"""
+def print_all():
+	print("\nVypis vsech dokumentu v : "+ str(db))
+	#vysledek=list()
+	vysledek={}
+	n=1
+	for dokumenty in db:
+		#print("\ndokument ID: " + dokumenty)
+		doc=db[dokumenty]
+		print("V dokumentu (ID: '"+dokumenty+"') se nachazi: ")
+		#vys={}
+		for row in doc:
+			vysledek[str(row)]=str(doc[row])
+			print("--radek: \""+str(row) +"\" --obsah: \""+str(doc[row])+"\"")
+			#vys[str(row)] = str(doc[row])
+		#vysledek['result'+str(n)]=vys #zkouska dictionary v dictionary
+		#vysledek.append(vys)
+		n=n+1
+	return vysledek
+"""
+
+
 
 def insert_document(dokum, docID):
 	documentid=docID
@@ -91,9 +114,9 @@ def insert_document(dokum, docID):
 		doc_id=documentid
 	else:
 		print("\nVkladam dokument '"+ documentid +"' do databaze '"+ str(db)+"'")
-		#db.save({'_id':documentid, document})
-		result= db.testovaci_databaze.insert_one(document)
-		return result
+		db.save({'_id':documentid, 'data': document})
+		#result= db.testovaci_databaze.insert_one(document)
+		#return result
 
 def insert_pymodel(ttl="testdefault"):
 	person=UserDataInput(_id="id#"+str(datetime.now())+"#id",title=ttl, instructor="42")
@@ -131,15 +154,17 @@ def find_first(docname):
 
 
 db=create_database('funkcetest', 1) #('nazevdatabaze', 1-zapnuti komentare)
-insert_pymodel("Johny")
-insert_pymodel("test")
-insert_pymodel()
+#insert_pymodel("Johny")
+#insert_pymodel("test")
+#insert_pymodel()
 #insert_pymodel('funkcetest')
 #insert_document(db,'dokumentID')
 
 #update_user(db,"updatedoc")
 
-print_all()
+zkouska=print_all()
+
+print("Zkouska DICTIONARY:\n", zkouska) #funguje vraci: {'_id': 'id#2022-05-09 17:25:05.372309#id', '_rev': '1-f9edac8252bea261a60d6deb0cbb2799', 'id': 'id2<built-in method now of type object at 0x7f4e5114c000>2id', 'title': 'testdefault', 'instructor': '42', 'publish_date': '2022-05-09T17:25:05.372336Z'}
 
 
 #find_first(db,"faffe2acc80cce5bf5d747dda1004dd1")
