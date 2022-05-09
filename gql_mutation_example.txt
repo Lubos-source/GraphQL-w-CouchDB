@@ -1,0 +1,34 @@
+mutation{
+  userCreate(userData:{id:"new_document",title:"instructor"}){
+    user{
+      id
+      title
+    }
+  }
+}
+
+mutation{
+  user(id:"new_document"){
+    id
+    title
+    instructor
+    publish_date
+  }
+}
+
+mutation{
+  userUpdate(userData:{id:"new_document"},newData:{title:"instructor"}){
+    user{
+      id
+      title
+    }
+  }
+}
+
+mutation{
+  userDelete(userData:{id:"new_document"}){
+    user{
+      id
+    }
+  }
+}
