@@ -1,11 +1,13 @@
-from cgitb import reset
 from graphene import String, ObjectType
 import graphene
 
-class CourseType(ObjectType):
-    _id = String(required=True)
-    title = String(required=True)
-    instructor = String(required=True)
+
+#GQL model:
+
+class CourseType(graphene.ObjectType):
+    _id = String()
+    title = String()
+    instructor = String() #required=False
     publish_date = String()
     
     #coursetypes=graphene.List(CourseType)
@@ -14,3 +16,9 @@ class CourseType(ObjectType):
     #    courseType_id=parent._id
     #    result=[]
     #    return result
+
+class UsrType(graphene.ObjectType):
+    _id = String()
+    title = String()
+    instructor = String()
+    publish_date = String()

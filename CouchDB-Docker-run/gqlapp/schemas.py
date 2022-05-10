@@ -1,5 +1,4 @@
 from graphene import ObjectType, Schema, String, Int, Field, List
-#from pydantic import BaseModel
 from models import User, UserCreate#, UserUpdate, UserDelete
 
 from conect import find_first, del_documents, update_user, insert_pymodel, insert_document, print_all, create_database, conectToCouch

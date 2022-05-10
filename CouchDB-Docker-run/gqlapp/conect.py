@@ -68,6 +68,7 @@ def insert_random_data():
 		[getFullRndDoc() for i in range(6)]
 	)
 
+"""
 def print_all():
 	print("\nVypis vsech dokumentu v : "+ str(db))
 	vysledek={}
@@ -81,9 +82,9 @@ def print_all():
 			print("--radek: \""+str(row) +"\" --obsah: \""+str(doc[row])+"\"")
 			vysledek[str(row)] = str(doc[row])
 			#vysledek.append(str(doc[row]))
-	return vysledek
-
+	return vysledek #vrati dictionary -> funguje overeni v docker konzoli aplikace
 """
+
 def print_all():
 	print("\nVypis vsech dokumentu v : "+ str(db))
 	#vysledek=list()
@@ -93,16 +94,16 @@ def print_all():
 		#print("\ndokument ID: " + dokumenty)
 		doc=db[dokumenty]
 		print("V dokumentu (ID: '"+dokumenty+"') se nachazi: ")
-		#vys={}
+		vys={}
 		for row in doc:
-			vysledek[str(row)]=str(doc[row])
+			#vysledek[str(row)]=str(doc[row])
 			print("--radek: \""+str(row) +"\" --obsah: \""+str(doc[row])+"\"")
-			#vys[str(row)] = str(doc[row])
-		#vysledek['result'+str(n)]=vys #zkouska dictionary v dictionary
+			vys[str(row)] = str(doc[row])
+		vysledek['data'+str(n)]=vys #zkouska dictionary v dictionary
 		#vysledek.append(vys)
 		n=n+1
 	return vysledek
-"""
+
 
 
 
@@ -141,19 +142,22 @@ def del_documents():
 
 
 def find_first(docname):
+	vysledek={}
 	for dokumenty in db:
 		if dokumenty==docname:
 			doc=db[dokumenty]
 			print("\nV dokumentu (ID: '"+dokumenty+"') se nachazi:")
 			for row in doc:
 				print("--radek: \""+str(row) +"\" --obsah: \""+str(doc[row])+"\"")
-			break
+				vysledek[str(row)]=str(doc[row])
+			
+			return vysledek
 
 
 #-------program-databaze-testing--------#
 
 
-db=create_database('funkcetest', 1) #('nazevdatabaze', 1-zapnuti komentare)
+db=create_database('funkcetest', 0) #('nazevdatabaze', 1-zapnuti komentare)
 #insert_pymodel("Johny")
 #insert_pymodel("test")
 #insert_pymodel()
@@ -166,7 +170,13 @@ zkouska=print_all()
 
 print("Zkouska DICTIONARY:\n", zkouska) #funguje vraci: {'_id': 'id#2022-05-09 17:25:05.372309#id', '_rev': '1-f9edac8252bea261a60d6deb0cbb2799', 'id': 'id2<built-in method now of type object at 0x7f4e5114c000>2id', 'title': 'testdefault', 'instructor': '42', 'publish_date': '2022-05-09T17:25:05.372336Z'}
 
-
+"""
+print("\nCYKLUS:\n")
+n=1
+for data in zkouska:
+	print(zkouska['data'+str(n)])
+	n=n+1
+"""
 #find_first(db,"faffe2acc80cce5bf5d747dda1004dd1")
 
 #del_documents(db)
