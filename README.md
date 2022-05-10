@@ -1,9 +1,10 @@
 ### Aktualni chyby
 - Při spuštění run.bat --> chyba v dockeru import module 'couchdb', ale při spuštění lokálně vše all right. (asi nejak spatne nainstalovane requirments ?)
-- prozatimní řešení : spouštět FastAPI server lokálně (příkaz do terminálu ve složce:    uvicorn main:app --reload)<br/>
+- VYŘEŠENO: 2 knihovny v requirements nespolupracovali -> odstraněna CouchBase a ponechána couchdb
 <br/>
 
 - GQL chyba načtení schémat ---> udělat znovu schémata, modely, queries a resolvery !!!
+- Částečně vyřešeno -> dodělat zbylé CRUD operace :)
 
 ### Úkoly
 
@@ -33,10 +34,12 @@
     - [x] Nainstalovani + konfigurace databaze couchDB v dockeru
     - [x] Propojeni s databazi + manipulace s ni
     - [x] Vytvoření čistého GQL pomocí FastAPI nebo jiného rozhraní
-    - [ ] Vytvoření schémat, modelů, queries, mutations do GQL aplikace
-- [x] testování programu (docker databaze✔️, propojeni s databazi✔️, GQL docker✔️, ...)
-- [x] projektový den (7.4.2022)
-- [ ] projektový den alfa verze (5.5.2022)
+    - [x] Vytvoření schémat, modelů, queries, mutations do GQL aplikace (zatím hotovo: 2 queries, 1 mutation)
+    - [ ] Vytvořit zbylé CRUD operace (queries, mutace) podle možného používání
+    - [ ] Vytvořit Modely a Schémata pro reálnou DBS (Users, Groups, Departmens, ... podle předchozího projektu)
+- [x] testování programu (docker databaze✔️, propojeni s databazi✔️, GQL docker✔️, query First_by_ID✔️, query allDocsFromDBS✔️, mutation createDocInDBS✔️,....)
+- [x] projektový den (7.4.2022) - Konzultace, ujasnění, instalace, zavedení do dockeru
+- [x] projektový den alfa verze (5.5.2022) - propojeni + docker + funkce na práci s dbs
 - [ ] projektový den beta verze (8.6.2022)
 - [ ] uzavření projektu (23.6.2022)
 
