@@ -1,11 +1,9 @@
-
-from email.policy import default
 import couchdb
 
 from datetime import datetime
 from couchdb.mapping import Document, TextField, IntegerField, DateTimeField
 
-from graphqlaplication import getFullRndDoc
+from randomdater import getFullRndDoc
 
 ###---------Connection:------------------------###
 """
@@ -33,7 +31,7 @@ class UserDataInput(Document):
 	_id= TextField()
 	title=TextField()
 	instructor=IntegerField()
-	publish_date=DateTimeField(default=datetime.now)
+	publish_date=DateTimeField(default=datetime.now())
 
 
 class UserDataShow(Document):
@@ -68,23 +66,6 @@ def insert_random_data():
 		[getFullRndDoc() for i in range(6)]
 	)
 
-"""
-def print_all():
-	print("\nVypis vsech dokumentu v : "+ str(db))
-	vysledek={}
-	for dokumenty in db:
-		#print("\ndokument ID: " + dokumenty)
-		#vysledek.append('id')
-		#vysledek.append(dokumenty)
-		doc=db[dokumenty]
-		print("V dokumentu (ID: '"+dokumenty+"') se nachazi: ")
-		for row in doc:
-			print("--radek: \""+str(row) +"\" --obsah: \""+str(doc[row])+"\"")
-			vysledek[str(row)] = str(doc[row])
-			#vysledek.append(str(doc[row]))
-	return vysledek #vrati dictionary -> funguje overeni v docker konzoli aplikace
-"""
-
 def print_all():
 	print("\nVypis vsech dokumentu v : "+ str(db))
 	#vysledek=list()
@@ -104,20 +85,22 @@ def print_all():
 		n=n+1
 	return vysledek
 
-
-
-
-def insert_document(dokum, docID):
-	documentid=docID
+def insert_document(dokum):
+	#documentid=docID
 	document=dokum
-	if documentid in db:
-		print("\nDokument s ID '"+documentid+"' jiz existuje v databazi '"+ str(db)+"'")
-		doc_id=documentid
+	ajdi=document['_id']
+	if ajdi in db:
+		print("\nDokument s ID '"+ajdi+"' jiz existuje v databazi '"+ str(db)+"'")
+		r=find_first(ajdi)
+		result=r.copy()
+		result.update({'_id': ajdi +"  + info : (Prvek jiz existuje v databazi)"})
 	else:
-		print("\nVkladam dokument '"+ documentid +"' do databaze '"+ str(db)+"'")
-		db.save({'_id':documentid, 'data': document})
-		#result= db.testovaci_databaze.insert_one(document)
-		#return result
+		print("\nVkladam dokument '"+ ajdi +"' do databaze '"+ str(db)+"'")
+		document['publish_date']=str(datetime.now())
+		db.save(document)
+		ajdi=document['_id']
+		result= find_first(ajdi)
+	return result
 
 def insert_pymodel(ttl="testdefault"):
 	person=UserDataInput(_id="id#"+str(datetime.now())+"#id",title=ttl, instructor="42")
@@ -139,8 +122,6 @@ def del_documents():
 		del db[dok]
 		print("'"+dok + "' uspesne odstranen !")
 
-
-
 def find_first(docname):
 	vysledek={}
 	for dokumenty in db:
@@ -150,7 +131,6 @@ def find_first(docname):
 			for row in doc:
 				print("--radek: \""+str(row) +"\" --obsah: \""+str(doc[row])+"\"")
 				vysledek[str(row)]=str(doc[row])
-			
 			return vysledek
 
 
@@ -168,15 +148,8 @@ db=create_database('funkcetest', 0) #('nazevdatabaze', 1-zapnuti komentare)
 
 zkouska=print_all()
 
-print("Zkouska DICTIONARY:\n", zkouska) #funguje vraci: {'_id': 'id#2022-05-09 17:25:05.372309#id', '_rev': '1-f9edac8252bea261a60d6deb0cbb2799', 'id': 'id2<built-in method now of type object at 0x7f4e5114c000>2id', 'title': 'testdefault', 'instructor': '42', 'publish_date': '2022-05-09T17:25:05.372336Z'}
+print("Zkouska DICTIONARY:\n", zkouska) #funguje 
 
-"""
-print("\nCYKLUS:\n")
-n=1
-for data in zkouska:
-	print(zkouska['data'+str(n)])
-	n=n+1
-"""
-#find_first(db,"faffe2acc80cce5bf5d747dda1004dd1")
+#find_first("faffe2acc80cce5bf5d747dda1004dd1")
 
 #del_documents(db)

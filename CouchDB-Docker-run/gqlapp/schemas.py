@@ -1,34 +1,63 @@
-from graphene import ObjectType, Schema, String, Int, Field, List
-from models import User, UserCreate#, UserUpdate, UserDelete
+from graphene import ObjectType, String, Field, List
+import graphene
+from conect import print_all,find_first,insert_document
+from models import CourseType,UsrType
 
-from conect import find_first, del_documents, update_user, insert_pymodel, insert_document, print_all, create_database, conectToCouch
+from datetime import datetime
 
-
-class Mutation(ObjectType):
-	user_create = UserCreate.Field()
-	#user_update = UserUpdate.Field()
-	#user_delete = UserDelete.Field()
+######----------GQL-QUERY--------#######
 
 class Query(ObjectType):
-	fill_db = String()
-	user = Field(User, name=String(required=True))
-	#user_all = List(User, name=String(required=True))
-	#user2 = String(name=String())
-	
-	''' Resolvers perform action, when the above is called '''
-	def resolve_fill_db(root, info):
-		#loop.run_until_complete(do_insert_random())
-		#loop.run_until_complete(print_all())
-		insert_document('dokumentZresolveu','filldbresolver')
-		print_all()
-		return "Filled"
+    get_course = Field(CourseType, id = String(required=True))
+    user=List(UsrType)
 
-	def resolve_user(root, info, name):
-		return find_first(name)
-"""
-	def resolve_user_all(root, info, name):
-		return #loop.run_until_complete(do_find(name))
+    course_list = {}
+    
+    def resolve_get_course(root, info,id): #vypise prvniho nalezenoho podle zadaneho id 
+        course_list = find_first(id) #'id#2022-05-10 06:22:44.414852#id'
+        return course_list 
 
-	def resolve_user2(root, info, name):
-		return #loop.run_until_complete(do_find_one(name))
-"""
+    def resolve_user(root, info): #vypise vsechny prvky(dokumenty) z databaze(list of dictionaries)
+        usr=print_all()
+        result=list()
+        n=1
+        for prvky in usr:
+            result.append(usr['data'+str(n)])
+            n=n+1
+        return result
+    
+#####------------GQL-MUTATIONS------######
+
+class CreateCourseInput(graphene.InputObjectType):
+    _id=String(required=True)
+    title=String(required=False)
+    instructor=String(required=False)
+    publish_date=String(default=datetime.now()) #graphene.DateTime .... ale nefunguje je potreba se na to vic podivat do hloubky
+
+    def asDict(self):
+        return {
+            '_id':self._id,
+            'title':self.title,
+            'instructor':self.instructor,
+            'publish_date':self.publish_date
+        }
+
+class CreateCourse(graphene.Mutation):
+    class Arguments:
+        course = CreateCourseInput(required=False)
+
+    ok=graphene.Boolean()
+    result=graphene.Field(CourseType)
+
+    def mutate(parent, info, course=None):
+        course_list = {}
+        course_listdef={"_id":"defultID", "title": "defaulttitle", "instructor": "defaultinstructor", "publish_date": ""} #, "publish_date": "" + datetime.now + "" 
+        course_list=course_listdef.copy()
+        course_list.update(course)
+        res=insert_document(course_list)
+        return CreateCourse(ok=True, result=res)
+    pass
+
+
+class Mutations(ObjectType):
+    create_course = CreateCourse.Field()
