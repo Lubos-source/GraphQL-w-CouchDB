@@ -1,3 +1,4 @@
+#Funkcni queries a mutations:
 #Vypsani prvniho podle id v dbs
 query{
   getCourse(id:"id#2022-05-10 06:22:44.407640#id"){
@@ -19,8 +20,21 @@ query{
   }
 }
 
+
+mutation{
+  createCourse(course:{Id:"sayHeyo",title:"YouGot",instructor:"ItEasy"}){
+    result{
+      Id
+      title
+      instructor
+      publishDate
+    }
+  }
+}
+
 mountpoint: http://localhost:32222/graphql
 
+#Inspirace moznych mutations a queries:
 mutation{
   userCreate(userData:{id:"new_document",title:"instructor"}){
     user{
