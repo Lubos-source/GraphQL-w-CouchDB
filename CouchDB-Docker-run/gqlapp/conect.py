@@ -1,3 +1,4 @@
+import email
 import couchdb
 
 from datetime import datetime
@@ -29,16 +30,18 @@ def conectToCouch():
 
 class UserDataInput(Document):
 	_id= TextField()
-	title=TextField()
-	instructor=IntegerField()
+	name=TextField()
+	surname=TextField()
+	address=TextField()
+	email=TextField()
 	publish_date=DateTimeField(default=datetime.now())
 
-
+"""
 class UserDataShow(Document):
 	_id= TextField()
-	title=TextField()
-	instructor=IntegerField()
-	publish_date=DateTimeField()
+	name=TextField()
+	surname=TextField()
+	publish_date=DateTimeField()"""
 
 
 ######---tvorba-funkcipro-komunikaci-s-databazi---#########
@@ -103,7 +106,7 @@ def insert_document(dokum):
 	return result
 
 def insert_pymodel(ttl="testdefault"):
-	person=UserDataInput(_id="id#"+str(datetime.now())+"#id",title=ttl, instructor="42")
+	person=UserDataInput(_id="id#"+str(datetime.now())+"#id",name=ttl, surname="42", address="adresa 15/666", email= ttl+"email@default.com")
 	person.store(db)
 
 def update_user(newjmeno,docid):

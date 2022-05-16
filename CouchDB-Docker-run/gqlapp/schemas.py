@@ -1,23 +1,26 @@
 from graphene import ObjectType, String, Field, List
 import graphene
 from conect import print_all,find_first,insert_document
-from models import CourseType,UsrType
+from models import UsrType #,Group,GroupType
 
 from datetime import datetime
 
 ######----------GQL-QUERY--------#######
 
 class Query(ObjectType):
-    get_course = Field(CourseType, id = String(required=True))
-    user=List(UsrType)
+    get_user = Field(UsrType, id = String(required=True))
+    users=List(UsrType)
 
-    course_list = {}
+    # group = Field(Group, id = ID(required=True))
+    # grouptype = Field(GroupType, id = ID(required=True))
+
+    user_list = {}
     
-    def resolve_get_course(root, info,id): #vypise prvniho nalezenoho podle zadaneho id 
-        course_list = find_first(id) #'id#2022-05-10 06:22:44.414852#id'
-        return course_list 
+    def resolve_get_user(root, info,id): #vypise prvniho nalezenoho podle zadaneho id 
+        user_list = find_first(id) #'id#2022-05-10 06:22:44.414852#id'
+        return user_list 
 
-    def resolve_user(root, info): #vypise vsechny prvky(dokumenty) z databaze(list of dictionaries)
+    def resolve_users(root, info): #vypise vsechny prvky(dokumenty) z databaze(list of dictionaries)
         usr=print_all()
         result=list()
         n=1
@@ -25,39 +28,51 @@ class Query(ObjectType):
             result.append(usr['data'+str(n)])
             n=n+1
         return result
+
+    """def resolve_group(root, info, id):
+        session = extractSession(info)
+        return session.query(GroupModel).get(id)"""
+
+    """    def resolve_grouptype(root, info, id):
+            session = extractSession(info)
+            return session.query(GroupTypeModel).get(id)"""
     
 #####------------GQL-MUTATIONS------######
 
-class CreateCourseInput(graphene.InputObjectType):
+class CreateUserInput(graphene.InputObjectType):
     _id=String(required=True)
-    title=String(required=False)
-    instructor=String(required=False)
+    name=String(required=False)
+    surname=String(required=False)
+    address=String(required=False)
+    email=String(required=False, default="default@email.com")
     publish_date=String(default=datetime.now()) #graphene.DateTime .... ale nefunguje je potreba se na to vic podivat do hloubky
 
     def asDict(self):
         return {
             '_id':self._id,
-            'title':self.title,
-            'instructor':self.instructor,
+            'name':self.name,
+            'surname':self.surname,
+            'address':self.address,
+            'email':self.email,
             'publish_date':self.publish_date
         }
 
-class CreateCourse(graphene.Mutation):
+class CreateUser(graphene.Mutation):
     class Arguments:
-        course = CreateCourseInput(required=False)
+        userC = CreateUserInput(required=False)
 
     ok=graphene.Boolean()
-    result=graphene.Field(CourseType)
+    result=graphene.Field(UsrType)
 
-    def mutate(parent, info, course=None):
-        course_list = {}
-        course_listdef={"_id":"defultID", "title": "defaulttitle", "instructor": "defaultinstructor", "publish_date": ""} #, "publish_date": "" + datetime.now + "" 
-        course_list=course_listdef.copy()
-        course_list.update(course)
-        res=insert_document(course_list)
-        return CreateCourse(ok=True, result=res)
+    def mutate(parent, info, userC=None):
+        user_list = {}
+        user_listdef={"_id":"defultID", "name": "defaultname", "surname": "defaultsurname","address":"defAdress","email":"def@email.com", "publish_date": ""} #, "publish_date": "" + datetime.now + "" 
+        user_list=user_listdef.copy()
+        user_list.update(userC)
+        res=insert_document(user_list)
+        return CreateUser(ok=True, result=res)
     pass
 
 
 class Mutations(ObjectType):
-    create_course = CreateCourse.Field()
+    create_user = CreateUser.Field()
