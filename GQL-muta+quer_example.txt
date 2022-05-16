@@ -1,10 +1,12 @@
 #Funkcni queries a mutations:
 #Vypsani prvniho podle id v dbs
 query{
-  getCourse(id:"id#2022-05-10 06:22:44.407640#id"){
+  getUser(id:"Titletest"){
     Id
-    title
-    instructor
+    name
+    surname
+    address
+    email
     publishDate
   }
 }
@@ -12,21 +14,25 @@ query{
 
 #Vypsani vsech dokumentu v dbs
 query{
-  user{
+  users{
     Id
-    title
-    instructor
+    name
+    surname
+    address
+    email
     publishDate
   }
 }
 
-
+#Vytvoreni dokumentu v dbs
 mutation{
-  createCourse(course:{Id:"sayHeyo",title:"YouGot",instructor:"ItEasy"}){
+  createUser(userC:{Id:"PrvkyNavic",name:"Titletest",surname:"insTest",address:"Adresa",email:"emailUz@email.cz"}){
     result{
       Id
-      title
-      instructor
+      name
+      surname
+      address
+      email
       publishDate
     }
   }
