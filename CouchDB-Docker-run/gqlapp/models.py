@@ -1,4 +1,4 @@
-from graphene import String
+from graphene import String,List
 import graphene
 
 
@@ -25,7 +25,7 @@ class UsrType(graphene.ObjectType):
     address=String() 
     email= String()
 
-    #groups = List(lambda: Group)   ???? neco takoveho asi :)
+    # groups = List(lambda: Group)   #???? neco takoveho asi :)
     """def resolve_groups(parent, info):
             session = extractSession(info)
             personRecord = session.query(PersonModel).get(parent.id)
@@ -33,11 +33,11 @@ class UsrType(graphene.ObjectType):
 """
 
 class Group(graphene.ObjectType):
-    id=String()
+    id=String()                     # 23-5KB, FVT, FVL, FVZ, ucitel_UO, student_UO, K-209,
     name=String()
 
     #NM - GROUP - PERSON
-    # members = List(Person)
+    members = List(UsrType)
     #1N - GROUPTYPE - GROUP
     # grouptype = Field(lambda: GroupType)
     """def resolve_grouptype(parent, info):
@@ -47,7 +47,7 @@ class Group(graphene.ObjectType):
 """
 
 class GroupType(graphene.ObjectType):
-    id=String()
+    id=String()                     #studijni skupina, skolni pluk, katedra, fakulta, ucitele, studenti,
     name=String()
     #1N - GROUPTYPE - GROUP
     # groups = List(Group)
@@ -57,3 +57,18 @@ class GroupType(graphene.ObjectType):
             grouptypeRecord = session.query(GroupTypeModel).get(parent.id)
             return grouptypeRecord.groups
 """
+
+class Role(graphene.ObjectType):
+    id=String()                     #student, ucitel, (v kazde skupine ve ktere je ma nejakou roli)
+    name=String()
+
+    #NM - GROUP - PERSON
+    members = List(UsrType)
+    # groups = List(lambda: Group)
+
+class RoleType(graphene.ObjectType):
+    id=String()                     #??? typ role ???? nwm
+    name=String()
+
+    #NM - GROUP - PERSON
+    members = List(UsrType)

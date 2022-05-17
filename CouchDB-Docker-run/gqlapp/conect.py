@@ -1,4 +1,3 @@
-import email
 import couchdb
 
 from datetime import datetime
@@ -156,3 +155,11 @@ print("Zkouska DICTIONARY:\n", zkouska) #funguje
 #find_first("faffe2acc80cce5bf5d747dda1004dd1")
 
 #del_documents(db)
+
+
+####TODO:
+#get user by email ?
+#get users by name ? (list of users with same name)
+#relation between user and group and group type
+#
+
