@@ -108,12 +108,34 @@ def insert_pymodel(ttl="testdefault"):
 	person=UserDataInput(_id="id#"+str(datetime.now())+"#id",name=ttl, surname="42", address="adresa 15/666", email= ttl+"email@default.com")
 	person.store(db)
 
-def update_user(newjmeno,docid):
-	####UPDATE DOCUMENT####
-	person = UserDataInput.load(db, docid)
-	person.name = newjmeno
-	person.store(db)
-	#print(person.name)
+def update_user(updateDoc,docid):
+	####UPDATE DOCUMENT####	#komentare zatim nechavam, kdyby me napadl jiny zpusob pomoci nacteni(load), zemny a ulozeni (store)... ale zatim takhle :)
+	#updater = UserDataInput.load(db, docid)
+	puvodni={}
+	#print("V updater je: ", updater)
+	#print("Items v updateru: ", updater.items())
+	#print("dict v updateru: ", updater.__dict__)
+	
+	#resss=doc.items()
+	#resss=dict.fromkeys(resss)
+	
+	#print("dict v updateru: ", resss)
+	doc=db[docid]
+	for row in doc:
+			puvodni[str(row)] = str(doc[row])
+	print("Puvodni dict: ", puvodni)
+	vysledek=puvodni.copy()
+	vysledek.update(updateDoc)
+	#for key,value in vysledek.items():
+	#	updater.key = value 							#bohuzel nelze key musi byt definovane v UserDataInput a tam jsou jen konkretni keys
+		#print("key: " + key + "  Val :" + value)
+	#print("Nahled: ",vysledek)
+	#updater = updateDoc
+	#updater.store(db)
+	db.save(vysledek)										#nevyhoda muze ulozit i neco navic.... pokud vlozi nejaky dalsi klic do update dictionary....
+	updater = UserDataInput.load(db, docid)
+	print("Data Po UPDATE: ", updater)
+	return 1
 
 def del_documents():
 	print("\nodstranuji veskere dokumenty v databazi '"+str(db)+"' ...")
@@ -123,6 +145,18 @@ def del_documents():
 		#db.delete(dint)
 		del db[dok]
 		print("'"+dok + "' uspesne odstranen !")
+
+def del_doc(docid):
+	vysledek={}
+	if (docid in db):
+		doc=db[docid]
+		db.delete(doc)
+	else:
+		return({"name":"DELETE-exception", "message":"Documents doesnt exist in DBS"})
+	#doc=db[docid]
+	vysledek['name']="sucessfull-DELETE"
+	vysledek['message']="succesfully deleted document from dbs"
+	return(vysledek)
 
 def find_first(docname):
 	vysledek={}

@@ -49,40 +49,29 @@ mutation{
   }
 }
 
+#Update User dokument by id zmena vseho co zada do dictionary defaultni={} -> nic nezmeni
+mutation{
+  updateUser(id:"MailMe",UserUP:{name:"Jmeno",address:"ZMENAadresy"}){
+    result{
+      Id
+      name
+      surname
+      address
+      email
+      publishDate
+    }
+  }
+}
+
+#Delete user dokumet v dbs
+mutation{
+  deleteUser(id:"MailMe"){
+    result{
+       name
+       message
+  	}
+   }
+}
+
 mountpoint: http://localhost:32222/graphql
 
-#Inspirace moznych mutations a queries:
-mutation{
-  userCreate(userData:{id:"new_document",title:"instructor"}){
-    user{
-      id
-      title
-    }
-  }
-}
-
-mutation{
-  user(id:"new_document"){
-    id
-    title
-    instructor
-    publish_date
-  }
-}
-
-mutation{
-  userUpdate(userData:{id:"new_document"},newData:{title:"instructor"}){
-    user{
-      id
-      title
-    }
-  }
-}
-
-mutation{
-  userDelete(userData:{id:"new_document"}){
-    user{
-      id
-    }
-  }
-}

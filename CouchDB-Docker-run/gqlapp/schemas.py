@@ -1,7 +1,8 @@
+from unittest import result
 from graphene import ObjectType, String, Field, List
 import graphene
-from conect import print_all,find_first,insert_document
-from models import UsrType #,Group,GroupType
+from conect import print_all,find_first,insert_document,update_user,del_doc
+from models import UsrType, Response #,Group,GroupType
 
 from datetime import datetime
 ##########################################
@@ -41,10 +42,10 @@ class Query(ObjectType):
 #####------------GQL-MUTATIONS------------####
 ##############################################
 
-#######-USER-#######
+#######-USER-create-#######
 
 class CreateUserInput(graphene.InputObjectType):
-    _id=String(required=True)
+    _id=String(required=False)
     name=String(required=False)
     surname=String(required=False)
     address=String(required=False)
@@ -77,7 +78,34 @@ class CreateUser(graphene.Mutation):
         return CreateUser(ok=True, result=res)
     pass
 
-#######-GROUP-########
+####-USER-update####                            #DODELAT: pokud se v dbs nenachazi tak vytvorit nebo poslat chybovouhlasku !!!!!!
+class UpdateUser(graphene.Mutation):
+    class Arguments:
+        id=String(required=True)
+        UserUP= CreateUserInput(required=False)
+    
+    ok= graphene.Boolean()
+    result=graphene.Field(UsrType)
+
+    def mutate(parent,info, id, UserUP={}):            #nevim proc ale "info" zde musi byt i kdyz se nepouzije ... jinak nejede (NonType Error)
+
+        user=update_user(UserUP, id)
+        res=find_first(id)
+        return UpdateUser(ok=True,result=res)
+
+####-USER-delete-####
+class DeleteUser(graphene.Mutation):
+    class Arguments:
+        id=String(required=True)
+
+    ok=graphene.Boolean()
+    result=graphene.Field(Response)
+
+    def mutate(parent, info, id):
+        delection=del_doc(id)
+        return DeleteUser(ok=True,result=delection)
+
+#######-GROUP-create-########
 
 class CreateGroupInput(graphene.InputObjectType):
     _id=String(required=True)
@@ -110,4 +138,6 @@ class CreateGroup(graphene.Mutation):
 class Mutations(ObjectType):
     create_user = CreateUser.Field()
     create_group = CreateGroup.Field()
+    update_user = UpdateUser.Field()
+    delete_user = DeleteUser.Field()
 

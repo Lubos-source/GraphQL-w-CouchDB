@@ -74,3 +74,7 @@ class RoleType(graphene.ObjectType):
 
     #NM - GROUP - PERSON
     members = List(UsrType)
+
+class Response(graphene.ObjectType):
+    name=String()
+    message=String()
