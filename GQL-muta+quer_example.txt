@@ -38,6 +38,17 @@ mutation{
   }
 }
 
+#Vytvoreni group dokumentu v dbs
+mutation{
+  createGroup(groupC:{Id:"SkupinaID",name:"TestovaciSkupina"}){
+    result{
+      Id
+      name
+      publishDate     #navic parametr
+    }
+  }
+}
+
 mountpoint: http://localhost:32222/graphql
 
 #Inspirace moznych mutations a queries:

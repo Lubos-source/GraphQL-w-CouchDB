@@ -4,9 +4,9 @@ from conect import print_all,find_first,insert_document
 from models import UsrType #,Group,GroupType
 
 from datetime import datetime
-
-######----------GQL-QUERY--------#######
-
+##########################################
+######----------GQL-QUERY----------#######
+##########################################
 class Query(ObjectType):
     get_user = Field(UsrType, id = String(required=True))
     users=List(UsrType)
@@ -37,7 +37,11 @@ class Query(ObjectType):
             session = extractSession(info)
             return session.query(GroupTypeModel).get(id)"""
     
-#####------------GQL-MUTATIONS------######
+##############################################    
+#####------------GQL-MUTATIONS------------####
+##############################################
+
+#######-USER-#######
 
 class CreateUserInput(graphene.InputObjectType):
     _id=String(required=True)
@@ -73,6 +77,37 @@ class CreateUser(graphene.Mutation):
         return CreateUser(ok=True, result=res)
     pass
 
+#######-GROUP-########
+
+class CreateGroupInput(graphene.InputObjectType):
+    _id=String(required=True)
+    name=String(required=False)
+    
+    def asDict(self):
+        return {
+            '_id':self._id,
+            'name':self.name
+        }
+
+
+class CreateGroup(graphene.Mutation):
+    class Arguments:
+        groupC = CreateGroupInput(required=False)
+
+    ok=graphene.Boolean()
+    result=graphene.Field(UsrType)
+
+    def mutate(parent, info, groupC=None):
+        group_list = {}
+        group_listdef={"_id":"defultGroupID", "name": "defaultnameOfGROUP"}
+        group_list=group_listdef.copy()
+        group_list.update(groupC)
+        res=insert_document(group_list)
+        return CreateGroup(ok=True, result=res)
+    pass
+
 
 class Mutations(ObjectType):
     create_user = CreateUser.Field()
+    create_group = CreateGroup.Field()
+

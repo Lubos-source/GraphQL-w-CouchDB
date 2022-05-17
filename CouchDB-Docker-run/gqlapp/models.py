@@ -37,7 +37,9 @@ class Group(graphene.ObjectType):
     name=String()
 
     #NM - GROUP - PERSON
-    members = List(UsrType)
+    members = List(UsrType)     #Mozna udelat jen List of IDs a kdyz se tvori skupina tak vsechny ID ktere zde jsou tak aktualizovat aby meli ID dane ksupiny v sobe (UPDATE)
+                                #To stejne pokud se vytvori uzivatel ktery bude mit ID skupiny tak zkontrolovat pripdane UPDATE dane skupiny jestli ma v members ID uzivatele
+
     #1N - GROUPTYPE - GROUP
     # grouptype = Field(lambda: GroupType)
     """def resolve_grouptype(parent, info):
