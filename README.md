@@ -5,6 +5,9 @@
 
 - GQL chyba načtení schémat ---> udělat znovu schémata, modely, queries a resolvery !!!
 - Částečně vyřešeno -> dodělat zbylé CRUD operace :)
+<br/>
+
+- Dodělat UpdateUser chybovou hlasku - při nenalezeni bud vytvorit prvek se vsema potrebnema informacemi nebo napsat chybovou hlasku, ze update nejde udelat protoze prvek neexistuje
 
 ### Úkoly
 
