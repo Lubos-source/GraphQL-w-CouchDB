@@ -59,9 +59,10 @@ def create_database(dbname,n=0):
 
 	return databaze[dbname]
 
-
-# vytvoreni databaze
-db=create_database('funkcetest',0)
+#################################################
+## vytvoreni databaze							#
+db=create_database('funkcetest',0)				#
+#################################################
 
 def insert_random_data():
 	result= db.testovaci_databaze.insert_many(
@@ -81,7 +82,7 @@ def print_all():
 		for row in doc:
 			#vysledek[str(row)]=str(doc[row])
 			print("--radek: \""+str(row) +"\" --obsah: \""+str(doc[row])+"\"")
-			vys[str(row)] = str(doc[row])
+			vys[str(row)] = (doc[row])
 		vysledek['data'+str(n)]=vys #zkouska dictionary v dictionary
 		#vysledek.append(vys)
 		n=n+1
@@ -105,9 +106,10 @@ def insert_document(dokum):
 	return result
 
 def insert_pymodel(ttl="testdefault"):
-	person=UserDataInput(_id="id#"+str(datetime.now())+"#id",name=ttl, surname="42", address="adresa 15/666", email= ttl+"email@default.com")
-	person.store(db)
-
+	#person=UserDataInput(_id="id#"+str(datetime.now())+"#id",name=ttl, surname="42", address="adresa 15/666", email= ttl+"email@default.com")
+	#person.store(db)
+	return 0
+	
 def update_user(updateDoc,docid):
 	####UPDATE DOCUMENT####	#komentare zatim nechavam, kdyby me napadl jiny zpusob pomoci nacteni(load), zemny a ulozeni (store)... ale zatim takhle :)
 	#updater = UserDataInput.load(db, docid)
@@ -122,7 +124,7 @@ def update_user(updateDoc,docid):
 	#print("dict v updateru: ", resss)
 	doc=db[docid]
 	for row in doc:
-			puvodni[str(row)] = str(doc[row])
+			puvodni[str(row)] = (doc[row])
 	print("Puvodni dict: ", puvodni)
 	vysledek=puvodni.copy()
 	vysledek.update(updateDoc)
@@ -166,14 +168,23 @@ def find_first(docname):
 			print("\nV dokumentu (ID: '"+dokumenty+"') se nachazi:")
 			for row in doc:
 				print("--radek: \""+str(row) +"\" --obsah: \""+str(doc[row])+"\"")
-				vysledek[str(row)]=str(doc[row])
+				"""if (str(row)=="groups"):
+					skupiny={}
+					vysledek[str(row)]=doc[row]
+					for g in doc[row]:
+						#print(" g: ",g,"  doc[row]: ",doc[row])
+						skupiny=g
+						print("skupiny: ", skupiny)
+				else:"""
+				vysledek[str(row)]=(doc[row])	#POKUD bude chyba tak zde bylo : vysledek[str(row)]=str(doc[row])	KDYSI jsem upravil prave kvuli chybe, ted zatim v pohode + vyresi problemy s groups
+			print("vysledek obsahjue:",vysledek)
 			return vysledek
 
 
 #-------program-databaze-testing--------#
 
 
-db=create_database('funkcetest', 0) #('nazevdatabaze', 1-zapnuti komentare)
+#db=create_database('funkcetest', 0) #('nazevdatabaze', 1-zapnuti komentare)
 #insert_pymodel("Johny")
 #insert_pymodel("test")
 #insert_pymodel()
@@ -182,9 +193,9 @@ db=create_database('funkcetest', 0) #('nazevdatabaze', 1-zapnuti komentare)
 
 #update_user(db,"updatedoc")
 
-zkouska=print_all()
+#zkouska=print_all()
 
-print("Zkouska DICTIONARY:\n", zkouska) #funguje 
+#print("Zkouska DICTIONARY:\n", zkouska) #funguje 
 
 #find_first("faffe2acc80cce5bf5d747dda1004dd1")
 

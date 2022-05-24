@@ -25,7 +25,10 @@ class UsrType(graphene.ObjectType):
     address=String() 
     email= String()
 
-    # groups = List(lambda: Group)   #???? neco takoveho asi :)
+    groups = List(lambda: Group)   #???? neco takoveho asi :)
+
+    #def resolve_groups(parent,info):
+    #    return parent.groups
     """def resolve_groups(parent, info):
             session = extractSession(info)
             personRecord = session.query(PersonModel).get(parent.id)
@@ -39,6 +42,8 @@ class Group(graphene.ObjectType):
     #NM - GROUP - PERSON
     members = List(UsrType)     #Mozna udelat jen List of IDs a kdyz se tvori skupina tak vsechny ID ktere zde jsou tak aktualizovat aby meli ID dane ksupiny v sobe (UPDATE)
                                 #To stejne pokud se vytvori uzivatel ktery bude mit ID skupiny tak zkontrolovat pripdane UPDATE dane skupiny jestli ma v members ID uzivatele
+    #def resolve_members(parent,info):
+    #    return parent.members
 
     #1N - GROUPTYPE - GROUP
     # grouptype = Field(lambda: GroupType)
