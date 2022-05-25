@@ -1,7 +1,7 @@
 from unittest import result
 from graphene import ObjectType, String, Field, List
 import graphene
-from conect import print_all,find_first,insert_document,update_user,del_doc
+from conect import print_all,find_first,insert_document,update_user, update_user_group, del_doc
 from models import UsrType, Response, Group, GroupType
 
 from datetime import datetime
@@ -61,7 +61,7 @@ class CreateUserInput(graphene.InputObjectType):
     address=String(required=False)
     email=String(required=False, default="default@email.com")
     #groups=List((String),required=False) #G-all-G skupina(lidi) zde budou vsichni
-    publish_date=String(default=datetime.now()) #graphene.DateTime .... ale nefunguje je potreba se na to vic podivat do hloubky
+    #publish_date=String(default=datetime.now()) #graphene.DateTime .... ale nefunguje je potreba se na to vic podivat do hloubky
 
     def asDict(self):
         return {
@@ -69,9 +69,9 @@ class CreateUserInput(graphene.InputObjectType):
             'name':self.name,
             'surname':self.surname,
             'address':self.address,
-            'email':self.email,
+            'email':self.email
             #'groups':[Group],
-            'publish_date':self.publish_date
+            #'publish_date':self.publish_date
         }
 
 class CreateUser(graphene.Mutation):
@@ -83,7 +83,7 @@ class CreateUser(graphene.Mutation):
 
     def mutate(parent, info, userC=None):
         user_list = {}
-        user_listdef={"_id":"defultID", "type":"user", "name": "defaultname", "surname": "defaultsurname","address":"defAdress","email":"def@email.com", "groups":[{"_id":"G-all-G","name":"vsichni","members":[{"_id":"ID2"}]},{"_id":"_G-222-G","name":"vsi22","members":[{"_id":"ID1"},{"_id":"ID2", "name":"SS"}]}],"publish_date": ""} #, "publish_date": "" + datetime.now + "" 
+        user_listdef={"_id":"defultID", "type":"user", "name": "defaultname", "surname": "defaultsurname","address":"defAdress","email":"def@email.com", "groups":[{"_id":"G-all-G","type":"group", "name":"vsichni","members":[{"_id":"ID2", "type":"user"}]},{"_id":"G-222-G", "type":"group", "name":"vsi22","members":[{"_id":"ID1","type":"user"},{"_id":"ID2", "type":"user", "name":"SS"}]}],"publish_date": ""} #, "publish_date": "" + datetime.now + "" 
         user_list=user_listdef.copy()
         user_list.update(userC)
         res=insert_document(user_list)
@@ -154,8 +154,8 @@ class AddUserToGroup(graphene.Mutation):
     ok=graphene.Boolean()
     result=graphene.Field(UsrType)
 
-    def mutate(parent,info,userID,groupID="G-all-G"):
-        
+    def mutate(parent, info, userID, groupID="G-all-G"):
+        addgroup=update_user_group(userID, groupID)
         res=find_first(userID)
         return AddUserToGroup(ok=True, result=res)
 
@@ -164,4 +164,6 @@ class Mutations(ObjectType):
     create_group = CreateGroup.Field()
     update_user = UpdateUser.Field()
     delete_user = DeleteUser.Field()
+
+    add_user_to_group=AddUserToGroup.Field()
 

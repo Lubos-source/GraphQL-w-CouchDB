@@ -140,6 +140,24 @@ def update_user(updateDoc,docid):
 	print("Data Po UPDATE: ", updater)
 	return 1
 
+def update_user_group(docid, groupID):
+	puvodni={}
+	grp={}
+	doc=db[docid]
+	for row in doc:
+		puvodni[str(row)] = doc[row]
+	vysledek=puvodni.copy()
+	#print("vysledek: ", vysledek)
+	doc=db[groupID]
+	for row in doc:
+		grp[str(row)] = doc[row]
+	vysledek["groups"].append(grp)
+	db.save(vysledek)
+	#print("vysledek po APPENDU groupy: ", vysledek)
+	#print("group to add: ", db[groupID])
+	#vysledek["groups"].append()
+
+
 def del_documents():
 	print("\nodstranuji veskere dokumenty v databazi '"+str(db)+"' ...")
 	
