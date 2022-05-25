@@ -139,7 +139,7 @@ class CreateGroup(graphene.Mutation):
 
     def mutate(parent, info, groupC=None):
         group_list = {}
-        group_listdef={"_id":"defultGroupID", "type":"group", "name": "defaultnameOfGROUP"}
+        group_listdef={"_id":"defultGroupID", "type":"group", "name": "defaultnameOfGROUP","members":[]}
         group_list=group_listdef.copy()
         group_list.update(groupC)
         res=insert_document(group_list)
@@ -158,10 +158,9 @@ class AddUserToGroup(graphene.Mutation):
     def mutate(parent, info, userID, groupID="G-all-G"):
         try:
             addgroup=update_user_group(userID, groupID)
-            #res=find_first(userID)
+            #groupupdate=update_group_members(groupID, userID)
             return AddUserToGroup(ok=True, result=addgroup)
         except:
-            print("nastala vyjimka !!!!!!!!!!!!!: ")
             rs={"_id":"------ERROR-------", "name":"!!!!!! does NOT exist exception !!!!!", "surname":" USERid or GROUPid does NOT exist!!!! "}
             return AddUserToGroup(ok=True, result=rs)
 

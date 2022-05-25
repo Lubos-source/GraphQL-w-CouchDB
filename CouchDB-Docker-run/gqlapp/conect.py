@@ -153,8 +153,15 @@ def update_user_group(docid, groupID):
 		doc=db[groupID]
 		for row in doc:
 			grp[str(row)] = doc[row]
+		##### skoro funkcni dodelat -- aby se pri pridani usera do group kopiroval i cely user do group[memebers] !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		#grpmembers=grp.copy()
+		#print("group je:", grpmembers)
+		#grpmembers["members"].append(vysledek) if vysledek not in grpmembers["members"] else grpmembers["members"]
+		#print("po apendu: ", grpmembers) #funguje ale zatim ukaze vysledek v GQL ze je null chyba v userID nebo gorupID, lae to je spravne !!! podivat se na to !
+		#db.save(grpmembers)
 		vysledek["groups"].append(grp) if grp not in vysledek["groups"] else vysledek["groups"]
 		db.save(vysledek)
+		
 	return(find_first(docid))
 	#else:
 		#return(find_first("ErroRDONTexistingUserIDreturnVALUEnullPleaseByThisHardWritedIdWhichWillIhopeNeverExistOriamINtrubles.#56das65#"))
@@ -163,7 +170,17 @@ def update_user_group(docid, groupID):
 	#print("group to add: ", db[groupID])
 	#vysledek["groups"].append()
 
+"""def update_group_members(groupID, userID):
+	if ((db[userID]['_id'] in db) and (db[groupID]['_id'] in db)):
+		puvodni={}
+		memb={}
+		doc=db[groupID]
+		for row in doc:
+			puvodni[str(row)] = doc[row]
+		vysledek=puvodni.copy()
 
+	return 0
+"""
 def del_documents():
 	print("\nodstranuji veskere dokumenty v databazi '"+str(db)+"' ...")
 	
