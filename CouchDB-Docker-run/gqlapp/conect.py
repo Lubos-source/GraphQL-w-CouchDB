@@ -69,7 +69,7 @@ def insert_random_data():
 		[getFullRndDoc() for i in range(6)]
 	)
 
-def print_all():
+def print_all(type):
 	print("\nVypis vsech dokumentu v : "+ str(db))
 	#vysledek=list()
 	vysledek={}
@@ -79,13 +79,14 @@ def print_all():
 		doc=db[dokumenty]
 		print("V dokumentu (ID: '"+dokumenty+"') se nachazi: ")
 		vys={}
-		for row in doc:
-			#vysledek[str(row)]=str(doc[row])
-			print("--radek: \""+str(row) +"\" --obsah: \""+str(doc[row])+"\"")
-			vys[str(row)] = (doc[row])
-		vysledek['data'+str(n)]=vys #zkouska dictionary v dictionary
+		if(doc["type"]==type):
+			for row in doc:
+				#vysledek[str(row)]=str(doc[row])
+				print("--radek: \""+str(row) +"\" --obsah: \""+str(doc[row])+"\"")
+				vys[str(row)] = (doc[row])
+			vysledek['data'+str(n)]=vys #zkouska dictionary v dictionary
 		#vysledek.append(vys)
-		n=n+1
+			n=n+1
 	return vysledek
 
 def insert_document(dokum):

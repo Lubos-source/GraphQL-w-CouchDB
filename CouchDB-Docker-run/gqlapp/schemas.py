@@ -11,6 +11,7 @@ from datetime import datetime
 class Query(ObjectType):
     get_user = Field(UsrType, id = String(required=True))
     users=List(UsrType)
+    groups=List(Group)
 
     # group = Field(Group, id = ID(required=True))
     # grouptype = Field(GroupType, id = ID(required=True))
@@ -22,11 +23,20 @@ class Query(ObjectType):
         return user_list 
 
     def resolve_users(root, info): #vypise vsechny prvky(dokumenty) z databaze(list of dictionaries) #OPRAVIT vypisuje i skupiny, proste vse, zkusit aby vypsala jen users ???
-        usr=print_all()
+        usr=print_all("user")
         result=list()
         n=1
         for prvky in usr:
             result.append(usr['data'+str(n)])
+            n=n+1
+        return result
+
+    def resolve_groups(root,info):
+        grp=print_all("group")
+        result=list()
+        n=1
+        for prvky in grp:
+            result.append(grp['data'+str(n)])
             n=n+1
         return result
 
@@ -73,7 +83,7 @@ class CreateUser(graphene.Mutation):
 
     def mutate(parent, info, userC=None):
         user_list = {}
-        user_listdef={"_id":"defultID", "name": "defaultname", "surname": "defaultsurname","address":"defAdress","email":"def@email.com", "groups":[{"id":"G-all-G","name":"vsichni","members":[{"_id":"ID2"}]},{"id":"G-222-G","name":"vsi22","members":[{"_id":"ID1"},{"_id":"ID2", "name":"SS"}]}],"publish_date": ""} #, "publish_date": "" + datetime.now + "" 
+        user_listdef={"_id":"defultID", "type":"user", "name": "defaultname", "surname": "defaultsurname","address":"defAdress","email":"def@email.com", "groups":[{"_id":"G-all-G","name":"vsichni","members":[{"_id":"ID2"}]},{"_id":"_G-222-G","name":"vsi22","members":[{"_id":"ID1"},{"_id":"ID2", "name":"SS"}]}],"publish_date": ""} #, "publish_date": "" + datetime.now + "" 
         user_list=user_listdef.copy()
         user_list.update(userC)
         res=insert_document(user_list)
@@ -125,11 +135,11 @@ class CreateGroup(graphene.Mutation):
         groupC = CreateGroupInput(required=False)
 
     ok=graphene.Boolean()
-    result=graphene.Field(UsrType)
+    result=graphene.Field(Group)
 
     def mutate(parent, info, groupC=None):
         group_list = {}
-        group_listdef={"_id":"defultGroupID", "name": "defaultnameOfGROUP"}
+        group_listdef={"_id":"defultGroupID", "type":"group", "name": "defaultnameOfGROUP"}
         group_list=group_listdef.copy()
         group_list.update(groupC)
         res=insert_document(group_list)

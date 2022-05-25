@@ -19,6 +19,7 @@ class CourseType(graphene.ObjectType):
 
 class UsrType(graphene.ObjectType):
     _id = String()
+    type="user"
     name = String()
     surname = String()
     publish_date = String()
@@ -36,8 +37,10 @@ class UsrType(graphene.ObjectType):
 """
 
 class Group(graphene.ObjectType):
-    id=String()                     # 23-5KB, FVT, FVL, FVZ, ucitel_UO, student_UO, K-209,
+    _id=String()                     # 23-5KB, FVT, FVL, FVZ, ucitel_UO, student_UO, K-209,
+    type="group"
     name=String()
+    publish_date = String()
 
     #NM - GROUP - PERSON
     members = List(UsrType)     #Mozna udelat jen List of IDs a kdyz se tvori skupina tak vsechny ID ktere zde jsou tak aktualizovat aby meli ID dane ksupiny v sobe (UPDATE)
@@ -54,7 +57,8 @@ class Group(graphene.ObjectType):
 """
 
 class GroupType(graphene.ObjectType):
-    id=String()                     #studijni skupina, skolni pluk, katedra, fakulta, ucitele, studenti,
+    _id=String()                     #studijni skupina, skolni pluk, katedra, fakulta, ucitele, studenti,
+    type="group_type"
     name=String()
     #1N - GROUPTYPE - GROUP
     # groups = List(Group)
@@ -66,7 +70,8 @@ class GroupType(graphene.ObjectType):
 """
 
 class Role(graphene.ObjectType):
-    id=String()                     #student, ucitel, (v kazde skupine ve ktere je ma nejakou roli)
+    _id=String()                     #student, ucitel, (v kazde skupine ve ktere je ma nejakou roli)
+    type="role"
     name=String()
 
     #NM - GROUP - PERSON
@@ -74,7 +79,8 @@ class Role(graphene.ObjectType):
     # groups = List(lambda: Group)
 
 class RoleType(graphene.ObjectType):
-    id=String()                     #??? typ role ???? nwm
+    _id=String()                     #??? typ role ???? nwm
+    type="role_type"
     name=String()
 
     #NM - GROUP - PERSON
@@ -82,4 +88,5 @@ class RoleType(graphene.ObjectType):
 
 class Response(graphene.ObjectType):
     name=String()
+    type="response"
     message=String()
