@@ -141,18 +141,24 @@ def update_user(updateDoc,docid):
 	return 1
 
 def update_user_group(docid, groupID):
-	puvodni={}
-	grp={}
-	doc=db[docid]
-	for row in doc:
-		puvodni[str(row)] = doc[row]
-	vysledek=puvodni.copy()
-	#print("vysledek: ", vysledek)
-	doc=db[groupID]
-	for row in doc:
-		grp[str(row)] = doc[row]
-	vysledek["groups"].append(grp)
-	db.save(vysledek)
+	print("user ", db[docid]['_id'], " group ", db[groupID]['_id'])
+	if ((db[docid]['_id'] in db) and (db[groupID]['_id'] in db)):
+		puvodni={}
+		grp={}
+		doc=db[docid]
+		for row in doc:
+			puvodni[str(row)] = doc[row]
+		vysledek=puvodni.copy()
+		#print("vysledek: ", vysledek)
+		doc=db[groupID]
+		for row in doc:
+			grp[str(row)] = doc[row]
+		vysledek["groups"].append(grp) if grp not in vysledek["groups"] else vysledek["groups"]
+		db.save(vysledek)
+	return(find_first(docid))
+	#else:
+		#return(find_first("ErroRDONTexistingUserIDreturnVALUEnullPleaseByThisHardWritedIdWhichWillIhopeNeverExistOriamINtrubles.#56das65#"))
+		#return({"_id":"USER or GROUP", "name":"does NOT exist !!!!!","type":"ERROR"})
 	#print("vysledek po APPENDU groupy: ", vysledek)
 	#print("group to add: ", db[groupID])
 	#vysledek["groups"].append()
@@ -198,7 +204,7 @@ def find_first(docname):
 				vysledek[str(row)]=(doc[row])	#POKUD bude chyba tak zde bylo : vysledek[str(row)]=str(doc[row])	KDYSI jsem upravil prave kvuli chybe, ted zatim v pohode + vyresi problemy s groups
 			print("vysledek obsahjue:",vysledek)
 			return vysledek
-
+	return vysledek
 
 #-------program-databaze-testing--------#
 

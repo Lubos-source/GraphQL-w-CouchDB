@@ -153,11 +153,19 @@ class AddUserToGroup(graphene.Mutation):
     
     ok=graphene.Boolean()
     result=graphene.Field(UsrType)
+    resultErr=graphene.Field(Response)
 
     def mutate(parent, info, userID, groupID="G-all-G"):
-        addgroup=update_user_group(userID, groupID)
-        res=find_first(userID)
-        return AddUserToGroup(ok=True, result=res)
+        try:
+            addgroup=update_user_group(userID, groupID)
+            #res=find_first(userID)
+            return AddUserToGroup(ok=True, result=addgroup)
+        except:
+            print("nastala vyjimka !!!!!!!!!!!!!: ")
+            rs={"_id":"------ERROR-------", "name":"!!!!!! does NOT exist exception !!!!!", "surname":" USERid or GROUPid does NOT exist!!!! "}
+            return AddUserToGroup(ok=True, result=rs)
+
+            
 
 class Mutations(ObjectType):
     create_user = CreateUser.Field()
