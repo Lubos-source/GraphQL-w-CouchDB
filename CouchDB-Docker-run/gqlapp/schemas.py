@@ -83,7 +83,7 @@ class CreateUser(graphene.Mutation):
 
     def mutate(parent, info, userC=None):
         user_list = {}
-        user_listdef={"_id":"defultID", "type":"user", "name": "defaultname", "surname": "defaultsurname","address":"defAdress","email":"def@email.com", "groups":[{"_id":"G-all-G","type":"group", "name":"vsichni","members":[{"_id":"ID2", "type":"user"}]},{"_id":"G-222-G", "type":"group", "name":"vsi22","members":[{"_id":"ID1","type":"user"},{"_id":"ID2", "type":"user", "name":"SS"}]}],"publish_date": ""} #, "publish_date": "" + datetime.now + "" 
+        user_listdef={"_id":"defultID", "type":"user", "name": "defaultname", "surname": "defaultsurname","address":"defAdress","email":"def@email.com", "groups":[{"_id":"Group-all-users","type":"group", "name":"All Users","members":[]}],"publish_date": ""} #, "publish_date": "" + datetime.now + "" 
         user_list=user_listdef.copy()
         user_list.update(userC)
         res=insert_document(user_list)

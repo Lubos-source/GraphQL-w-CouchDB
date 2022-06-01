@@ -28,6 +28,9 @@ class UsrType(graphene.ObjectType):
 
     groups = List(lambda: Group)   #???? neco takoveho asi :)
 
+    #2. návrh 01.06.2022 - neukláadat celé objekty, protože se zacyklí a zadrbe celou databázi, moc místa ! takže ukládat jen ID a pak při query 
+    # použít find(ID) ktere se vlozi do vysledku, mohlo by asi fungovat :)
+
     #def resolve_groups(parent,info):
     #    return parent.groups
     """def resolve_groups(parent, info):

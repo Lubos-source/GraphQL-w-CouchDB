@@ -38,6 +38,25 @@ mutation{
   }
 }
 
+#Přidání uživatele do skupiny
+mutation{
+  addUserToGroup(groupID:"SkupinaID",userID:"aa"){
+    ok
+    result{
+      Id
+      name
+      surname
+      publishDate
+      address
+      email
+      groups{
+        Id
+        name
+      }
+    }
+  }
+}
+
 #Vytvoreni group dokumentu v dbs
 mutation{
   createGroup(groupC:{Id:"SkupinaID",name:"TestovaciSkupina"}){

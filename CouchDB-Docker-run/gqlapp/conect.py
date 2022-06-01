@@ -104,6 +104,11 @@ def insert_document(dokum):
 		db.save(document)
 		ajdi=document['_id']
 		result= find_first(ajdi)
+
+		#db["Group-all-users"]
+		if (dokum["type"]!="group"):
+			update_group_members("Group-all-users",ajdi)
+
 	return result
 
 def insert_pymodel(ttl="testdefault"):
@@ -144,7 +149,7 @@ def update_user_group(docid, groupID):
 	print("user ", db[docid]['_id'], " group ", db[groupID]['_id'])
 	if ((db[docid]['_id'] in db) and (db[groupID]['_id'] in db)):
 		puvodni={}
-		grp={}
+		grpuvodni={}
 		doc=db[docid]
 		for row in doc:
 			puvodni[str(row)] = doc[row]
@@ -152,25 +157,24 @@ def update_user_group(docid, groupID):
 		#print("vysledek: ", vysledek)
 		doc=db[groupID]
 		for row in doc:
-			grp[str(row)] = doc[row]
-		##### skoro funkcni dodelat -- aby se pri pridani usera do group kopiroval i cely user do group[memebers] !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		#grpmembers=grp.copy()
-		#print("group je:", grpmembers)
-		#grpmembers["members"].append(vysledek) if vysledek not in grpmembers["members"] else grpmembers["members"]
-		#print("po apendu: ", grpmembers) #funguje ale zatim ukaze vysledek v GQL ze je null chyba v userID nebo gorupID, lae to je spravne !!! podivat se na to !
-		#db.save(grpmembers)
-		vysledek["groups"].append(grp) if grp not in vysledek["groups"] else vysledek["groups"]
-		db.save(vysledek)
-		
-	return(find_first(docid))
-	#else:
-		#return(find_first("ErroRDONTexistingUserIDreturnVALUEnullPleaseByThisHardWritedIdWhichWillIhopeNeverExistOriamINtrubles.#56das65#"))
-		#return({"_id":"USER or GROUP", "name":"does NOT exist !!!!!","type":"ERROR"})
-	#print("vysledek po APPENDU groupy: ", vysledek)
-	#print("group to add: ", db[groupID])
-	#vysledek["groups"].append()
+			grpuvodni[str(row)] = doc[row]
 
-"""def update_group_members(groupID, userID):
+		print("\n\nTestovani nalezeni id v goups: \n")
+		grupy=[]
+		for grup in vysledek["groups"]:
+			print("Group ID: ", grup["_id"])
+			grupy.append(grup["_id"])
+			print("array of grupy: ", grupy)
+			#print("Group puvodni ID: ", grpuvodni["_id"])
+		#vysledek["groups"].append(grpuvodni["_id"]) if grpuvodni["_id"] not in grupy else vysledek["groups"]
+		vysledek["groups"].append(grpuvodni) if grpuvodni["_id"] not in grupy else vysledek["groups"]
+		db.save(vysledek)
+		update_group_members(groupID, docid)
+	return(find_first(docid))
+
+
+def update_group_members(groupID, userID):
+	print("\n---------------provadim funkci UPDATE GROUP!!!--------\n")
 	if ((db[userID]['_id'] in db) and (db[groupID]['_id'] in db)):
 		puvodni={}
 		memb={}
@@ -178,9 +182,20 @@ def update_user_group(docid, groupID):
 		for row in doc:
 			puvodni[str(row)] = doc[row]
 		vysledek=puvodni.copy()
+		membersarray=[]
+		for mem in vysledek["members"]:
+			membersarray.append(mem["_id"])
+		doc=db[userID]
+		for row in doc:
+			memb[str(row)]=doc[row] 
+		print(vysledek)
+		#vysledek["members"].append(memb["_id"]) if memb["_id"] not in membersarray else vysledek["members"]
+		vysledek["members"].append(memb) if memb["_id"] not in membersarray else vysledek["members"]
+		db.save(vysledek)
+		
 
-	return 0
-"""
+	#return 0
+
 def del_documents():
 	print("\nodstranuji veskere dokumenty v databazi '"+str(db)+"' ...")
 	
@@ -207,9 +222,9 @@ def find_first(docname):
 	for dokumenty in db:
 		if dokumenty==docname:
 			doc=db[dokumenty]
-			print("\nV dokumentu (ID: '"+dokumenty+"') se nachazi:")
+			#print("\nV dokumentu (ID: '"+dokumenty+"') se nachazi:")
 			for row in doc:
-				print("--radek: \""+str(row) +"\" --obsah: \""+str(doc[row])+"\"")
+				#print("--radek: \""+str(row) +"\" --obsah: \""+str(doc[row])+"\"")
 				"""if (str(row)=="groups"):
 					skupiny={}
 					vysledek[str(row)]=doc[row]
@@ -219,7 +234,7 @@ def find_first(docname):
 						print("skupiny: ", skupiny)
 				else:"""
 				vysledek[str(row)]=(doc[row])	#POKUD bude chyba tak zde bylo : vysledek[str(row)]=str(doc[row])	KDYSI jsem upravil prave kvuli chybe, ted zatim v pohode + vyresi problemy s groups
-			print("vysledek obsahjue:",vysledek)
+			#print("vysledek obsahjue:",vysledek)
 			return vysledek
 	return vysledek
 
@@ -247,6 +262,6 @@ def find_first(docname):
 ####TODO:
 #get user by email ?
 #get users by name ? (list of users with same name)
-#relation between user and group and group type
+#relation between user and group and group type (zkusit jen ID do listu a při query použit funkci find(ID), kter doplní obejkt podle uloženého ID 
 #
 
