@@ -1,3 +1,4 @@
+from pydoc import doc
 import couchdb
 
 from datetime import datetime
@@ -70,22 +71,23 @@ def insert_random_data():
 	)
 
 def print_all(type):
-	print("\nVypis vsech dokumentu v : "+ str(db))
-	#vysledek=list()
 	vysledek={}
 	n=1
 	for dokumenty in db:
-		#print("\ndokument ID: " + dokumenty)
 		doc=db[dokumenty]
-		print("V dokumentu (ID: '"+dokumenty+"') se nachazi: ")
 		vys={}
+		skupiny={}
 		if(doc["type"]==type):
 			for row in doc:
-				#vysledek[str(row)]=str(doc[row])
-				print("--radek: \""+str(row) +"\" --obsah: \""+str(doc[row])+"\"")
-				vys[str(row)] = (doc[row])
+				if (str(row)=="groups"):
+					vys["groups"]=[]
+					for group in doc["groups"]:
+						skupiny[group]=find_first(group)
+					for key in skupiny:
+						vys["groups"].append(skupiny[key])
+				else:
+					vys[str(row)] = (doc[row])
 			vysledek['data'+str(n)]=vys #zkouska dictionary v dictionary
-		#vysledek.append(vys)
 			n=n+1
 	return vysledek
 
@@ -147,7 +149,7 @@ def update_user(updateDoc,docid):
 
 def update_user_group(docid, groupID):
 	print("user ", db[docid]['_id'], " group ", db[groupID]['_id'])
-	if ((db[docid]['_id'] in db) and (db[groupID]['_id'] in db)):
+	if (((db[docid]['_id'] in db) and (db[docid]["type"]=="user")) and ((db[groupID]['_id'] in db) and (db[groupID]["type"]=="group"))):
 		puvodni={}
 		grpuvodni=[]
 		doc=db[docid]
@@ -216,25 +218,60 @@ def find_first(docname):
 			doc=db[dokumenty]
 			#print("\nV dokumentu (ID: '"+dokumenty+"') se nachazi:")
 			skupiny={}
+			members={}
 			for row in doc:
 				#print("--radek: \""+str(row) +"\" --obsah: \""+str(doc[row])+"\"")
 				if (str(row)=="groups"):
-					
+					vysledek["groups"]=[]
 					#vysledek[str(row)]=doc[row]
 					for group in doc["groups"]:
 						#print(" g: ",g,"  doc[row]: ",doc[row])
 						skupiny[group]=find_first(group)
 					print("skupiny: ", skupiny)
-				#else:
-				vysledek[str(row)]=(doc[row])	#POKUD bude chyba tak zde bylo : vysledek[str(row)]=str(doc[row])	KDYSI jsem upravil prave kvuli chybe, ted zatim v pohode + vyresi problemy s groups
+					for key in skupiny:
+						print("v groups je : ", vysledek["groups"])
+						print("skupina je : ", skupiny[key])
+						vysledek["groups"].append(skupiny[key])
+		####DODELAT members !!!!!!!!!
+				#elif(str(row)=="members"):
+					
+				#	print("MEMBER LINE FOUND") #Zde budeme chtit list membrs doplnene ktere se apenduji na prazdny vysledek[members]
+				#	grp=find_members(doc)
+				#	vysledek["members"]=[]
+				#	vysledek["members"].append(grp["members"])
+				else:
+					vysledek[str(row)]=(doc[row])	#POKUD bude chyba tak zde bylo : vysledek[str(row)]=str(doc[row])	KDYSI jsem upravil prave kvuli chybe, ted zatim v pohode + vyresi problemy s groups
 			print("vysledek obsahuje:",vysledek)
-			vysledek["groups"]=[]
-			for key in skupiny:
-				print("v groups je : ", vysledek["groups"])
-				print("skupina je : ", skupiny[key])
-				vysledek["groups"].append(skupiny[key])
 			return vysledek
 	return vysledek
+
+def find_members(docID):
+	vysledek={}
+	
+	for row in docID:
+		print("1 + doc id", docID)
+		vysledek[str(row)]=docID[row]
+		if(str(row)=="members"):
+			vysledek["members"]=[]
+			for member in docID["members"]:
+				membr={}
+				print("2 member: ",member)
+				#membri[member]=find_first(member) # nesmim pouzit jinak to zacyklim...member ma v sobe group a ta zase member....
+				for row in db[member]:
+					print("3 row ", row)
+					membr[str(row)]=db[member][row]
+					print("4 + membr ma: ", membr)
+					"""if(str(row)=="groups"):
+						membr["groups"]=[]
+						membr["groups"]=[{"_id":"skupiny", "name":"unreachable"}]"""
+				vysledek["members"].append(membr)
+				print("5 + vysledek po appendu: ", vysledek)
+	
+		"""else:
+			vysledek[str(row)]=docID[row]"""
+
+	print("vysledek pred navratem : ", vysledek)
+	return(vysledek)
 
 #-------program-databaze-testing--------#
 

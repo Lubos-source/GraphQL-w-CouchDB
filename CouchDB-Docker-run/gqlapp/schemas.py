@@ -89,7 +89,7 @@ class CreateUser(graphene.Mutation):
         user_list.update(userC)
         res=insert_document(user_list)
         try:
-            up=update_group_members("Group-all-users",user_list["_id"])
+            update_group_members("Group-all-users",user_list["_id"])
         except:
             pass
         return CreateUser(ok=True, result=res)
