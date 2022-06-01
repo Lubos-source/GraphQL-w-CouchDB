@@ -106,8 +106,8 @@ def insert_document(dokum):
 		result= find_first(ajdi)
 
 		#db["Group-all-users"]
-		if (dokum["type"]!="group"):
-			update_group_members("Group-all-users",ajdi)
+		#if (dokum["type"]!="group"):
+		#	update_group_members("Group-all-users",ajdi)
 
 	return result
 
@@ -149,27 +149,24 @@ def update_user_group(docid, groupID):
 	print("user ", db[docid]['_id'], " group ", db[groupID]['_id'])
 	if ((db[docid]['_id'] in db) and (db[groupID]['_id'] in db)):
 		puvodni={}
-		grpuvodni={}
+		grpuvodni=[]
 		doc=db[docid]
 		for row in doc:
 			puvodni[str(row)] = doc[row]
 		vysledek=puvodni.copy()
-		#print("vysledek: ", vysledek)
-		doc=db[groupID]
-		for row in doc:
-			grpuvodni[str(row)] = doc[row]
 
-		print("\n\nTestovani nalezeni id v goups: \n")
-		grupy=[]
 		for grup in vysledek["groups"]:
-			print("Group ID: ", grup["_id"])
-			grupy.append(grup["_id"])
-			print("array of grupy: ", grupy)
+			print("Group ID: ", grup)
+			grpuvodni.append(grup)
 			#print("Group puvodni ID: ", grpuvodni["_id"])
-		#vysledek["groups"].append(grpuvodni["_id"]) if grpuvodni["_id"] not in grupy else vysledek["groups"]
-		vysledek["groups"].append(grpuvodni) if grpuvodni["_id"] not in grupy else vysledek["groups"]
+		#grpuvodni.append(groupID)
+		vysledek["groups"].append(groupID) if groupID not in grpuvodni else vysledek["groups"]
+		print("debug 1 ")
+		#vysledek["groups"].append(grpuvodni) if grpuvodni["_id"] not in grupy else vysledek["groups"]
 		db.save(vysledek)
+		print("debug 2 ")
 		update_group_members(groupID, docid)
+		print("debug 3 ")
 	return(find_first(docid))
 
 
@@ -177,20 +174,15 @@ def update_group_members(groupID, userID):
 	print("\n---------------provadim funkci UPDATE GROUP!!!--------\n")
 	if ((db[userID]['_id'] in db) and (db[groupID]['_id'] in db)):
 		puvodni={}
-		memb={}
+		membpuvodni=[]
 		doc=db[groupID]
 		for row in doc:
 			puvodni[str(row)] = doc[row]
 		vysledek=puvodni.copy()
-		membersarray=[]
 		for mem in vysledek["members"]:
-			membersarray.append(mem["_id"])
-		doc=db[userID]
-		for row in doc:
-			memb[str(row)]=doc[row] 
-		print(vysledek)
-		#vysledek["members"].append(memb["_id"]) if memb["_id"] not in membersarray else vysledek["members"]
-		vysledek["members"].append(memb) if memb["_id"] not in membersarray else vysledek["members"]
+			membpuvodni.append(mem)
+		vysledek["members"].append(userID) if userID not in membpuvodni else vysledek["members"]
+		#vysledek["members"].append(memb) if memb["_id"] not in membersarray else vysledek["members"]
 		db.save(vysledek)
 		
 
@@ -223,18 +215,24 @@ def find_first(docname):
 		if dokumenty==docname:
 			doc=db[dokumenty]
 			#print("\nV dokumentu (ID: '"+dokumenty+"') se nachazi:")
+			skupiny={}
 			for row in doc:
 				#print("--radek: \""+str(row) +"\" --obsah: \""+str(doc[row])+"\"")
-				"""if (str(row)=="groups"):
-					skupiny={}
-					vysledek[str(row)]=doc[row]
-					for g in doc[row]:
+				if (str(row)=="groups"):
+					
+					#vysledek[str(row)]=doc[row]
+					for group in doc["groups"]:
 						#print(" g: ",g,"  doc[row]: ",doc[row])
-						skupiny=g
-						print("skupiny: ", skupiny)
-				else:"""
+						skupiny[group]=find_first(group)
+					print("skupiny: ", skupiny)
+				#else:
 				vysledek[str(row)]=(doc[row])	#POKUD bude chyba tak zde bylo : vysledek[str(row)]=str(doc[row])	KDYSI jsem upravil prave kvuli chybe, ted zatim v pohode + vyresi problemy s groups
-			#print("vysledek obsahjue:",vysledek)
+			print("vysledek obsahuje:",vysledek)
+			vysledek["groups"]=[]
+			for key in skupiny:
+				print("v groups je : ", vysledek["groups"])
+				print("skupina je : ", skupiny[key])
+				vysledek["groups"].append(skupiny[key])
 			return vysledek
 	return vysledek
 
@@ -263,5 +261,5 @@ def find_first(docname):
 #get user by email ?
 #get users by name ? (list of users with same name)
 #relation between user and group and group type (zkusit jen ID do listu a při query použit funkci find(ID), kter doplní obejkt podle uloženého ID 
-#
+#PRINT ALL upravit aby query precetlo list IDs a vratilo jejich objekt ! 01.06.2022
 

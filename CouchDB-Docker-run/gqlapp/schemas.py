@@ -1,7 +1,8 @@
+from re import X
 from unittest import result
 from graphene import ObjectType, String, Field, List
 import graphene
-from conect import print_all,find_first,insert_document,update_user, update_user_group, del_doc
+from conect import print_all,find_first,insert_document,update_user, update_user_group, del_doc, update_group_members
 from models import UsrType, Response, Group, GroupType
 
 from datetime import datetime
@@ -83,10 +84,14 @@ class CreateUser(graphene.Mutation):
 
     def mutate(parent, info, userC=None):
         user_list = {}
-        user_listdef={"_id":"defultID", "type":"user", "name": "defaultname", "surname": "defaultsurname","address":"defAdress","email":"def@email.com", "groups":[{"_id":"Group-all-users","type":"group", "name":"All Users","members":[]}],"publish_date": ""} #, "publish_date": "" + datetime.now + "" 
+        user_listdef={"_id":"defultID", "type":"user", "name": "defaultname", "surname": "defaultsurname","address":"defAdress","email":"def@email.com", "groups":["Group-all-users"],"publish_date": ""} #, "publish_date": "" + datetime.now + "" 
         user_list=user_listdef.copy()
         user_list.update(userC)
         res=insert_document(user_list)
+        try:
+            up=update_group_members("Group-all-users",user_list["_id"])
+        except:
+            pass
         return CreateUser(ok=True, result=res)
     pass
 
