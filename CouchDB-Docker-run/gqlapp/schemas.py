@@ -110,8 +110,8 @@ class UpdateUser(graphene.Mutation):
         res=find_first(id)
         return UpdateUser(ok=True,result=res)
 
-####-USER-delete-####
-class DeleteUser(graphene.Mutation):
+####-Document-delete-----USER-/-or-/-GROUP-####
+class DeleteDocument(graphene.Mutation):
     class Arguments:
         id=String(required=True)
 
@@ -120,7 +120,7 @@ class DeleteUser(graphene.Mutation):
 
     def mutate(parent, info, id):
         delection=del_doc(id)
-        return DeleteUser(ok=True,result=delection)
+        return DeleteDocument(ok=True,result=delection)
 
 #######-GROUP-create-########
 
@@ -175,7 +175,7 @@ class Mutations(ObjectType):
     create_user = CreateUser.Field()
     create_group = CreateGroup.Field()
     update_user = UpdateUser.Field()
-    delete_user = DeleteUser.Field()
+    delete_document = DeleteDocument.Field()
 
     add_user_to_group=AddUserToGroup.Field()
 

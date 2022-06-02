@@ -78,7 +78,8 @@ def print_all(type):
 		vys={}
 		skupiny={}
 		if(doc["type"]==type):
-			for row in doc:
+			vys=find_first(doc["_id"])
+			"""for row in doc:
 				if (str(row)=="groups"):
 					vys["groups"]=[]
 					for group in doc["groups"]:
@@ -86,7 +87,7 @@ def print_all(type):
 					for key in skupiny:
 						vys["groups"].append(skupiny[key])
 				else:
-					vys[str(row)] = (doc[row])
+					vys[str(row)] = (doc[row])"""
 			vysledek['data'+str(n)]=vys #zkouska dictionary v dictionary
 			n=n+1
 	return vysledek
@@ -201,12 +202,33 @@ def del_documents():
 
 def del_doc(docid):
 	vysledek={}
-	if (docid in db):
+	if ((docid in db)and(db[docid]["type"]=="user")):
 		doc=db[docid]
+		for skupina in db[docid]["groups"]:
+			newlistmembers=db[skupina]["members"]
+			print("pred remove list: ", newlistmembers)
+			newlistmembers.remove(docid)
+			print("---Po remove list: ", newlistmembers)
+			novy=db[skupina]
+			novy["members"]=newlistmembers
+			db.save(novy)
+			print("PO remove list + UPDATE : ", db[skupina]["members"])
 		db.delete(doc)
+
+	elif((docid in db)and(db[docid]["type"]=="group")): #Mozna dodelat podminku aby nemohl odstranit def skupinu pro vsechny users (Group-all-users) ?
+		for member in db[docid]["members"]:
+			newlistgrps=db[member]["groups"]
+			print("pred remove list: ", newlistgrps)
+			newlistgrps.remove(docid)
+			print("---Po remove list: ", newlistgrps)
+			novy=db[member]
+			novy["groups"]=newlistgrps
+			db.save(novy)
+			print("PO remove list + UPDATE : ", db[member]["groups"])
+		db.delete(db[docid])
+
 	else:
-		return({"name":"DELETE-exception", "message":"Documents doesnt exist in DBS"})
-	#doc=db[docid]
+		return({"name":"DELETE-exception", "message":"Documents doesnt exist in DBS check your argument and his type (user/group)"})
 	vysledek['name']="sucessfull-DELETE"
 	vysledek['message']="succesfully deleted document from dbs"
 	return(vysledek)
@@ -216,62 +238,57 @@ def find_first(docname):
 	for dokumenty in db:
 		if dokumenty==docname:
 			doc=db[dokumenty]
-			#print("\nV dokumentu (ID: '"+dokumenty+"') se nachazi:")
 			skupiny={}
 			members={}
 			for row in doc:
-				#print("--radek: \""+str(row) +"\" --obsah: \""+str(doc[row])+"\"")
 				if (str(row)=="groups"):
 					vysledek["groups"]=[]
-					#vysledek[str(row)]=doc[row]
 					for group in doc["groups"]:
-						#print(" g: ",g,"  doc[row]: ",doc[row])
-						skupiny[group]=find_first(group)
+						grpvys={}
+						grpdoc=db[group]
+						for row in grpdoc:
+							if(str(row)=="members"):
+								grpvys["members"]=grpdoc[row]
+								grpidslist=[]
+								for member in grpvys["members"]:
+									grpvysdoc=db[member]
+									print("user: mebers ",grpvysdoc)
+									grpvysdoc["groups"]=[{"_id":"Moc Dlouhy Retezec"}] #Varovna hlaska ktera se ukaze v ID pokud bude uzivatel moc retezit ---> prozatimni zamezeni NEKONECNEMU cyklu !!
+									grpidslist.append(grpvysdoc)
+								grpvys["members"]=grpidslist
+							else:
+								grpvys[str(row)]=grpdoc[row]
+						skupiny[group]=grpvys
 					print("skupiny: ", skupiny)
 					for key in skupiny:
 						print("v groups je : ", vysledek["groups"])
 						print("skupina je : ", skupiny[key])
 						vysledek["groups"].append(skupiny[key])
-		####DODELAT members !!!!!!!!!
-				#elif(str(row)=="members"):
-					
-				#	print("MEMBER LINE FOUND") #Zde budeme chtit list membrs doplnene ktere se apenduji na prazdny vysledek[members]
-				#	grp=find_members(doc)
-				#	vysledek["members"]=[]
-				#	vysledek["members"].append(grp["members"])
+
+				elif((str(row)=="members")and(doc["type"]=="group")):
+					memberlist=[]
+					memvys={}
+					for member in doc["members"]:
+						print("debug member in members:", " v : ",doc["members"], " je: ",member)
+						memvysdoc={}
+						for memrow in db[member]:
+							memvysdoc[str(memrow)]=db[member][memrow]
+						#memvysdoc=db[member]
+						print("grp vys: ", memvysdoc)
+						memvysdoc["groups"]=[{"_id":"Moc Dlouhy Retezec"}] #Varovna hlaska ktera se ukaze v ID pokud bude uzivatel moc retezit ---> prozatimni zamezeni NEKONECNEMU cyklu !!
+						print("grp vys pop nul group: ", memvysdoc)
+						memberlist.append(memvysdoc)
+						print("grpLIST vys: ", memberlist)
+					memvys["members"]=memberlist
+					vysledek["members"]=memberlist
+
 				else:
 					vysledek[str(row)]=(doc[row])	#POKUD bude chyba tak zde bylo : vysledek[str(row)]=str(doc[row])	KDYSI jsem upravil prave kvuli chybe, ted zatim v pohode + vyresi problemy s groups
 			print("vysledek obsahuje:",vysledek)
 			return vysledek
 	return vysledek
 
-def find_members(docID):
-	vysledek={}
-	
-	for row in docID:
-		print("1 + doc id", docID)
-		vysledek[str(row)]=docID[row]
-		if(str(row)=="members"):
-			vysledek["members"]=[]
-			for member in docID["members"]:
-				membr={}
-				print("2 member: ",member)
-				#membri[member]=find_first(member) # nesmim pouzit jinak to zacyklim...member ma v sobe group a ta zase member....
-				for row in db[member]:
-					print("3 row ", row)
-					membr[str(row)]=db[member][row]
-					print("4 + membr ma: ", membr)
-					"""if(str(row)=="groups"):
-						membr["groups"]=[]
-						membr["groups"]=[{"_id":"skupiny", "name":"unreachable"}]"""
-				vysledek["members"].append(membr)
-				print("5 + vysledek po appendu: ", vysledek)
-	
-		"""else:
-			vysledek[str(row)]=docID[row]"""
 
-	print("vysledek pred navratem : ", vysledek)
-	return(vysledek)
 
 #-------program-databaze-testing--------#
 

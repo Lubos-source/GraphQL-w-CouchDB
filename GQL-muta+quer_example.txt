@@ -1,16 +1,22 @@
 #Funkcni queries a mutations:
+
 #Vypsani prvniho podle id v dbs
 query{
-  getUser(id:"Titletest"){
+  getUser(id:"typeTEST"){
     Id
     name
     surname
-    address
-    email
-    publishDate
+    groups{
+      Id
+      name
+      members{
+        Id
+        name
+        surname
+      }
+    }
   }
 }
-
 
 #Vypsani vsech dokumentu v dbs
 query{
@@ -20,13 +26,39 @@ query{
     surname
     address
     email
+    groups{
+      Id
+      name
+      publishDate
+      members {
+        Id
+        name
+        surname
+        publishDate
+        address
+        email
+      }
+    }
     publishDate
+  }
+}
+
+#Vypsani vsech skupin v dbs
+query{
+  groups{
+    Id
+    name
+    publishDate
+    members{
+      Id
+      name
+    }
   }
 }
 
 #Vytvoreni dokumentu v dbs
 mutation{
-  createUser(userC:{Id:"PrvkyNavic",name:"Titletest",surname:"insTest",address:"Adresa",email:"emailUz@email.cz"}){
+  createUser(userC:{Id:"typeTEST",name:"Titletest",surname:"insTest",address:"Adresa",email:"emailUz@email.cz"}){
     result{
       Id
       name
@@ -34,13 +66,19 @@ mutation{
       address
       email
       publishDate
+      groups{
+        Id
+        members{
+          Id
+        }
+      }
     }
   }
 }
 
 #Přidání uživatele do skupiny
 mutation{
-  addUserToGroup(groupID:"SkupinaID",userID:"aa"){
+  addUserToGroup(groupID:"G2",userID:"typeTEST"){
     ok
     result{
       Id
@@ -52,6 +90,9 @@ mutation{
       groups{
         Id
         name
+        members{
+          Id
+        }
       }
     }
   }
@@ -59,18 +100,21 @@ mutation{
 
 #Vytvoreni group dokumentu v dbs
 mutation{
-  createGroup(groupC:{Id:"SkupinaID",name:"TestovaciSkupina"}){
+  createGroup(groupC:{Id:"Group-all-users",name:"TestovaciSkupina"}){
     result{
       Id
       name
-      publishDate     #navic parametr
+      publishDate 
+      members{
+        Id
+      }
     }
   }
 }
 
 #Update User dokument by id zmena vseho co zada do dictionary defaultni={} -> nic nezmeni
 mutation{
-  updateUser(id:"MailMe",UserUP:{name:"Jmeno",address:"ZMENAadresy"}){
+  updateUser(id:"typeTEST",UserUP:{name:"Zmena",address:"ZMENAadresy"}){
     result{
       Id
       name
@@ -78,18 +122,25 @@ mutation{
       address
       email
       publishDate
+      groups{
+        Id
+        members{
+          Id
+          name
+        }
+      }
     }
   }
 }
 
-#Delete user dokumet v dbs
+#Delete DOKUMENT v dbs (user or group)
 mutation{
-  deleteUser(id:"MailMe"){
-    result{
-       name
-       message
+  deleteDocument(id:"Gr3"){
+  	result{
+    	  name
+  	  message
   	}
-   }
+    }
 }
 
 mountpoint: http://localhost:32222/graphql
