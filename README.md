@@ -5,9 +5,10 @@
 
 - GQL chyba načtení schémat ---> udělat znovu schémata, modely, queries a resolvery !!!
 - Částečně vyřešeno -> dodělat zbylé CRUD operace :)
+- Vyřešeno, dodělat zbylé ralitionships (Role, RoleType etc...) -> Group and User are DONE
 <br/>
 
-- Dodělat UpdateUser chybovou hlasku - při nenalezeni bud vytvorit prvek se vsema potrebnema informacemi nebo napsat chybovou hlasku, ze update nejde udelat protoze prvek neexistuje
+- Dodělat UpdateUser chybovou hlasku - při nenalezeni bud vytvorit prvek se vsema potrebnema informacemi nebo napsat chybovou hlasku, ze update nejde udelat protoze prvek neexistuje !
 
 ### Úkoly
 
@@ -38,11 +39,12 @@
     - [x] Propojeni s databazi + manipulace s ni
     - [x] Vytvoření čistého GQL pomocí FastAPI nebo jiného rozhraní
     - [x] Vytvoření schémat, modelů, queries, mutations do GQL aplikace (zatím hotovo: 2 queries, 1 mutation)
-    - [ ] Vytvořit zbylé CRUD operace (queries, mutace) podle možného používání
-    - [ ] Vytvořit Modely a Schémata pro reálnou DBS (Users, Groups, Departmens, ... podle předchozího projektu)
-- [x] testování programu (docker databaze✔️, propojeni s databazi✔️, GQL docker✔️, query First_by_ID✔️, query allDocsFromDBS✔️, mutation createDocInDBS✔️,....)
-- [x] projektový den (7.4.2022) - Konzultace, ujasnění, instalace, zavedení do dockeru
-- [x] projektový den alfa verze (5.5.2022) - propojeni + docker + funkce na práci s dbs
+    - [x] Vytcoření relací (Group-User✔️, Role,RoleType, GroupType, ...) 
+    - [x] Vytvořit zbylé CRUD operace (queries, mutace) podle možného používání
+    - [x] Vytvořit Modely a Schémata pro reálnou DBS (Users✔️, Groups✔️, GroupType, ... podle předchozího projektu)
+- [x] testování programu (docker databaze✔️, propojeni s databazi✔️, GQL docker✔️, query First_by_ID✔️, query allDocsFromDBS✔️, mutation createDocInDBS✔️, relations between Group/User all CRUDs✔️, debugGQLError ve funkcích✔️, mutace AddUserToGroup✔️, default Group pro users ✔️, ....)
+- [x] projektový den (7.4.2022) - Konzultace, ujasnění, instalace, zavedení do dockeru, odstranění docker-requirements chyby
+- [x] projektový den alfa verze (5.5.2022) - propojeni + docker, funkce na práci s dbs, kostra GQL
 - [ ] projektový den beta verze (8.6.2022)
 - [ ] uzavření projektu (23.6.2022)
 
