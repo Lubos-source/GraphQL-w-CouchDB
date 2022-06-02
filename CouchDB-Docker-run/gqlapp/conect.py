@@ -1,4 +1,3 @@
-from pydoc import doc
 import couchdb
 
 from datetime import datetime
@@ -121,31 +120,18 @@ def insert_pymodel(ttl="testdefault"):
 	
 def update_user(updateDoc,docid):
 	####UPDATE DOCUMENT####	#komentare zatim nechavam, kdyby me napadl jiny zpusob pomoci nacteni(load), zemny a ulozeni (store)... ale zatim takhle :)
-	#updater = UserDataInput.load(db, docid)
-	puvodni={}
-	#print("V updater je: ", updater)
-	#print("Items v updateru: ", updater.items())
-	#print("dict v updateru: ", updater.__dict__)
-	
-	#resss=doc.items()
-	#resss=dict.fromkeys(resss)
-	
-	#print("dict v updateru: ", resss)
-	doc=db[docid]
-	for row in doc:
-			puvodni[str(row)] = (doc[row])
-	print("Puvodni dict: ", puvodni)
-	vysledek=puvodni.copy()
-	vysledek.update(updateDoc)
-	#for key,value in vysledek.items():
-	#	updater.key = value 							#bohuzel nelze key musi byt definovane v UserDataInput a tam jsou jen konkretni keys
-		#print("key: " + key + "  Val :" + value)
-	#print("Nahled: ",vysledek)
-	#updater = updateDoc
-	#updater.store(db)
-	db.save(vysledek)										#nevyhoda muze ulozit i neco navic.... pokud vlozi nejaky dalsi klic do update dictionary....
-	updater = UserDataInput.load(db, docid)
-	print("Data Po UPDATE: ", updater)
+	if(db[docid]["type"]=="user"):
+
+		puvodni={}
+		doc=db[docid]
+		for row in doc:
+				puvodni[str(row)] = (doc[row])
+		print("Puvodni dict: ", puvodni)
+		vysledek=puvodni.copy()
+		vysledek.update(updateDoc)
+		db.save(vysledek)										#nevyhoda muze ulozit i neco navic.... pokud vlozi nejaky dalsi klic do update dictionary....
+		updater = UserDataInput.load(db, docid)
+		print("Data Po UPDATE: ", updater)
 	return 1
 
 def update_user_group(docid, groupID):
