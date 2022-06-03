@@ -84,7 +84,7 @@ class CreateUser(graphene.Mutation):
 
     def mutate(parent, info, userC=None):
         user_list = {}
-        user_listdef={"_id":"defultID", "type":"user", "name": "defaultname", "surname": "defaultsurname","address":"defAdress","email":"def@email.com", "groups":["Group-all-users"],"publish_date": ""} #, "publish_date": "" + datetime.now + "" 
+        user_listdef={"_id":"defultID", "type":"user", "name": "defaultname", "surname": "defaultsurname","address":"defAdress","email":"def@email.com", "groups":[{"grpid":"Group-all-users", "grprole":"idR-0"}],"publish_date": ""} #, "publish_date": "" + datetime.now + "" 
         user_list=user_listdef.copy()
         user_list.update(userC)
         res=insert_document(user_list)
@@ -127,11 +127,13 @@ class DeleteDocument(graphene.Mutation):
 class CreateGroupInput(graphene.InputObjectType):
     _id=String(required=True)
     name=String(required=False)
+    groupType=List(String)
     
     def asDict(self):
         return {
             '_id':self._id,
-            'name':self.name
+            'name':self.name,
+            'groupType':List(self.groupType)
         }
 
 
@@ -144,9 +146,12 @@ class CreateGroup(graphene.Mutation):
 
     def mutate(parent, info, groupC=None):
         group_list = {}
-        group_listdef={"_id":"defultGroupID", "type":"group", "name": "defaultnameOfGROUP","members":[]}
+        group_listdef={"_id":"defultGroupID", "type":"group", "name": "defaultnameOfGROUP","members":[],"groupType":["idGrT-3"]}
+        print("Zadany def LIST: ", group_listdef)
         group_list=group_listdef.copy()
+        print("Zadany Group C: ", groupC)
         group_list.update(groupC)
+        print("Po UPDATE: ", group_list)
         res=insert_document(group_list)
         return CreateGroup(ok=True, result=res)
     pass
@@ -155,18 +160,19 @@ class AddUserToGroup(graphene.Mutation):
     class Arguments:
         userID=String(required=True)
         groupID=String(required=True)
+        grproleID=String(required=True)
     
     ok=graphene.Boolean()
     result=graphene.Field(UsrType)
     resultErr=graphene.Field(Response)
 
-    def mutate(parent, info, userID, groupID="G-all-G"):
+    def mutate(parent, info, userID, groupID="Group-all-users", grproleID="idR-0"):
         try:
-            addgroup=update_user_group(userID, groupID)
+            addgroup=update_user_group(userID, groupID, grproleID)
             #groupupdate=update_group_members(groupID, userID)
             return AddUserToGroup(ok=True, result=addgroup)
         except:
-            rs={"_id":"------ERROR-------", "name":"!!!!!! does NOT exist exception !!!!!", "surname":" USERid or GROUPid does NOT exist!!!! "}
+            rs={"_id":"------ERROR-------", "name":"!!!!!! does NOT exist exception !!!!!", "surname":" USERid // GROUPid or GroupRole for user ! --> does NOT exist!!!! "}
             return AddUserToGroup(ok=True, result=rs)
 
             

@@ -3,7 +3,7 @@ import couchdb
 from datetime import datetime
 from couchdb.mapping import Document, TextField, IntegerField, DateTimeField
 
-from randomdater import getFullRndDoc
+from randomdater import GroupTypeDataFun, RoleDataFun, GroupDataFun
 
 ###---------Connection:------------------------###
 """
@@ -35,13 +35,6 @@ class UserDataInput(Document):
 	email=TextField()
 	publish_date=DateTimeField(default=datetime.now())
 
-"""
-class UserDataShow(Document):
-	_id= TextField()
-	name=TextField()
-	surname=TextField()
-	publish_date=DateTimeField()"""
-
 
 ######---tvorba-funkcipro-komunikaci-s-databazi---#########
 def create_database(dbname,n=0):
@@ -64,10 +57,13 @@ def create_database(dbname,n=0):
 db=create_database('funkcetest',0)				#
 #################################################
 
+
+"""
 def insert_random_data():
 	result= db.testovaci_databaze.insert_many(
 		[getFullRndDoc() for i in range(6)]
 	)
+"""
 
 def print_all(type):
 	vysledek={}
@@ -134,9 +130,9 @@ def update_user(updateDoc,docid):
 		print("Data Po UPDATE: ", updater)
 	return 1
 
-def update_user_group(docid, groupID):
-	print("user ", db[docid]['_id'], " group ", db[groupID]['_id'])
-	if (((db[docid]['_id'] in db) and (db[docid]["type"]=="user")) and ((db[groupID]['_id'] in db) and (db[groupID]["type"]=="group"))):
+def update_user_group(docid, groupID, grproleID):
+	print("user ", db[docid]['_id'], " group ", db[groupID]['_id'], "grprole: ", grproleID)
+	if (((db[docid]['_id'] in db) and (db[docid]["type"]=="user")) and ((db[groupID]['_id'] in db) and (db[groupID]["type"]=="group"))and(db[grproleID]['_id'] in db)):
 		puvodni={}
 		grpuvodni=[]
 		doc=db[docid]
@@ -146,10 +142,10 @@ def update_user_group(docid, groupID):
 
 		for grup in vysledek["groups"]:
 			print("Group ID: ", grup)
-			grpuvodni.append(grup)
+			grpuvodni.append(grup["grpid"])
 			#print("Group puvodni ID: ", grpuvodni["_id"])
 		#grpuvodni.append(groupID)
-		vysledek["groups"].append(groupID) if groupID not in grpuvodni else vysledek["groups"]
+		vysledek["groups"].append({"grpid":groupID, "grprole":grproleID}) if groupID not in grpuvodni else vysledek["groups"]
 		print("debug 1 ")
 		#vysledek["groups"].append(grpuvodni) if grpuvodni["_id"] not in grupy else vysledek["groups"]
 		db.save(vysledek)
@@ -190,22 +186,28 @@ def del_doc(docid):
 	vysledek={}
 	if ((docid in db)and(db[docid]["type"]=="user")):
 		doc=db[docid]
-		for skupina in db[docid]["groups"]:
-			newlistmembers=db[skupina]["members"]
-			print("pred remove list: ", newlistmembers)
+		newlistgrp=db[docid]["groups"]
+		print("list vsech skupin: ", newlistgrp)
+		for grp in newlistgrp:
+			newlistmembers=db[grp["grpid"]]["members"]
 			newlistmembers.remove(docid)
-			print("---Po remove list: ", newlistmembers)
-			novy=db[skupina]
+			print("po list: ", newlistmembers)
+			novy=db[grp["grpid"]]
 			novy["members"]=newlistmembers
+			print("ukladam : ", str(novy))
 			db.save(novy)
-			print("PO remove list + UPDATE : ", db[skupina]["members"])
+		#print("PO remove list + UPDATE : ", db[skupina]["members"])
 		db.delete(doc)
 
 	elif((docid in db)and(db[docid]["type"]=="group")): #Mozna dodelat podminku aby nemohl odstranit def skupinu pro vsechny users (Group-all-users) ?
 		for member in db[docid]["members"]:
 			newlistgrps=db[member]["groups"]
 			print("pred remove list: ", newlistgrps)
-			newlistgrps.remove(docid)
+			for i in range(len(newlistgrps)):
+				if (newlistgrps[i]['grpid'] == docid):
+					del newlistgrps[i]
+					break
+			#newlistgrps.remove(docid)
 			print("---Po remove list: ", newlistgrps)
 			novy=db[member]
 			novy["groups"]=newlistgrps
@@ -223,32 +225,75 @@ def find_first(docname):
 	vysledek={}
 	for dokumenty in db:
 		if dokumenty==docname:
+			print("DEBUG1 ---dokument nalezen v dbs---")
 			doc=db[dokumenty]
 			skupiny={}
 			members={}
 			for row in doc:
+				print("DEBUG2 ---row in Pozadovany dokument---", "row:   ", str(row))
 				if (str(row)=="groups"):
+					print("DEBUG3---row is GROUPS---", "row:   ", str(row))
 					vysledek["groups"]=[]
 					for group in doc["groups"]:
+						print("DEBUG4---for row is GROUPS---", "grup:   ", str(group))
 						grpvys={}
-						grpdoc=db[group]
+						print("DEBUG4.1---pristup k prvku v dict groups---", "prvek_:   ", str(group["grpid"]))
+						grpdoc=db[group["grpid"]]
+						print("DEBUG5---document dane Group---", "grpdoc:   ", str(grpdoc))
 						for row in grpdoc:
+							print("DEBUG6 ---for row in grpdoc---", "row:   ", str(row))
 							if(str(row)=="members"):
+								print("DEBUG7 ---row == members---", "row:   ", str(row))
 								grpvys["members"]=grpdoc[row]
+								print("ukladam tam : ", str(grpdoc[row]))
+								print("DEBUG7.1 ---grpvys[members]:---", "obsah:   ", str(grpvys["members"]))
 								grpidslist=[]
 								for member in grpvys["members"]:
+									print("DEBUG8 ---for member in docMMEBERS---", "row:   ", str(grpvys["members"]))
 									grpvysdoc=db[member]
 									print("user: mebers ",grpvysdoc)
 									grpvysdoc["groups"]=[{"_id":"Moc Dlouhy Retezec"}] #Varovna hlaska ktera se ukaze v ID pokud bude uzivatel moc retezit ---> prozatimni zamezeni NEKONECNEMU cyklu !!
 									grpidslist.append(grpvysdoc)
 								grpvys["members"]=grpidslist
+								print("DEBUG9 ---grpvys[members]:---", "obsah:   ", str(grpvys["members"]))
+							elif(str(row)=="groupType"):
+								print("DEBUG10 ---row == groupType :---", "obsah:   ", str(row))
+								grpvys["groupType"]=grpdoc[row]
+								print("DEBUG11 --- grpvys[groupType] :---", "obsah:   ", str(grpdoc[row]))
+								grpidslist=[]
+								for typ in grpvys["groupType"]:
+									print("DEBUG12 --- typ v grpvys[grouptype] :---", "obsah:   ", str(typ))
+									grpvysdoc=db[typ]
+									print("DEBUG13 --- hledej typ v dbs :---", "obsah:   ", str(grpvysdoc))
+									grpidslist.append(grpvysdoc)
+								grpvys["groupType"]=grpidslist
+								print("DEBUG14 --- vyledny grpvys[grouptype] v dbs :---", "obsah:   ", str(grpvys["groupType"]))
+								### DEBUG final result: srpávně uloží vše co chceme ! Bud chyba jinde nebo potrebujeme \
+								# misto typu <DOC ....> jen {} ---> cyklus. 
 							else:
 								grpvys[str(row)]=grpdoc[row]
-						skupiny[group]=grpvys
-					print("skupiny: ", skupiny)
+								print("DEBUG15 --- vyledny grpvys[row] v dbs :---", "obsah:   ", str(grpvys[str(row)]))
+						print("DEBUG16 --- vysledny vysledek ktery se ulozi do documentu v dbs :---", "obsah:   ", str(grpvys))
+						grptypes=[]
+						for prvky in grpvys["groupType"]:
+							grouptype={}
+							print("DEBUG16.1 --- prvky v grpType :---", "obsah:   ", str(prvky), " IN_:",str(grpvys["groupType"]))
+							for row in prvky:
+								print("DEBUG16.1.1 --- row v prvky :---", "obsah:   ", str(row), " IN_:",str(prvky))
+								grouptype[str(row)]=prvky[str(row)]
+						grptypes.append(grouptype)
+						print("DEBUG16.2 --- vse v grpTypes :---", "obsah:   ", str(grptypes))
+						print("DEBUG16.2.1 --- skupiny :---", "obsah:   ", str(skupiny), " group: ", str(group["grpid"]))
+						grpid=group["grpid"]
+						skupiny[grpid]=grpvys
+						skupiny[grpid]["groupType"]=[]
+						print("DEBUG16.3 --- prazdne grptype in skupiny :---", "obsah:   ", str(skupiny[grpid]))
+						skupiny[grpid]["groupType"]=grptypes
+						print("DEBUG16.3 --- NAPLNENO grptype in skupiny :---", "obsah:   ", str(skupiny[grpid]))
+						print("DEBUG17 --- vysledny skupiny :---", "obsah:   ", str(skupiny))
+
 					for key in skupiny:
-						print("v groups je : ", vysledek["groups"])
-						print("skupina je : ", skupiny[key])
+
 						vysledek["groups"].append(skupiny[key])
 
 				elif((str(row)=="members")and(doc["type"]=="group")):
@@ -267,7 +312,16 @@ def find_first(docname):
 						print("grpLIST vys: ", memberlist)
 					memvys["members"]=memberlist
 					vysledek["members"]=memberlist
-
+				
+				elif((str(row)=="groupType")and(doc["type"]=="group")):
+					grptypelist=[]
+					grptypevys={}
+					for grptype in doc["groupType"]:
+						typevys={}
+						for row in db[grptype]:
+							typevys[str(row)]=db[grptype][str(row)]
+						grptypelist.append(typevys)
+					vysledek["groupType"]=grptypelist
 				else:
 					vysledek[str(row)]=(doc[row])	#POKUD bude chyba tak zde bylo : vysledek[str(row)]=str(doc[row])	KDYSI jsem upravil prave kvuli chybe, ted zatim v pohode + vyresi problemy s groups
 			print("vysledek obsahuje:",vysledek)
@@ -277,6 +331,24 @@ def find_first(docname):
 
 
 #-------program-databaze-testing--------#
+
+
+dataGRPtype=GroupTypeDataFun()
+dataRoletype=RoleDataFun()
+dataGroup=GroupDataFun()
+
+print("vkladam data do databaze:")
+for data in dataGRPtype:
+	insert_document(data)
+print("group type data vlozena! ")
+
+for data in dataRoletype:
+	insert_document(data)
+print("role type data vlozena! ")
+
+for data in dataGroup:
+	insert_document(data)
+print("Def Groups ulozeny do dbs")
 
 
 #db=create_database('funkcetest', 0) #('nazevdatabaze', 1-zapnuti komentare)

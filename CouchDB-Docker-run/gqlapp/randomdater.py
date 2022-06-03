@@ -1,36 +1,28 @@
+####################################################
+##---------HARD-NO-CHANGE-VALUES------------------##
+####################################################
 
-#from conect import conectToCouch
+def GroupTypeDataFun():
+    datagrptype=[
+    {"_id":"idGrT-0", "name":"all", "type":"group_type"},
+    {"_id":"idGrT-1", "name":"katedra", "type":"group_type"},
+    {"_id":"idGrT-2", "name":"fakulta", "type":"group_type"},
+    {"_id":"idGrT-3", "name":"studijni skupina", "type":"group_type"},
+    {"_id":"idGrT-4", "name":"skolni pluk", "type":"group_type"}
+    ]
+    return(datagrptype)
 
-#client = conectToCouch()
-#print("overeni jestli existuje spojeni.")
-#db=client["testingdata"]
+def RoleDataFun():
+    datarole=[
+    {"_id":"idR-0", "name":"everybody", "type":"role"},
+    {"_id":"idR-1", "name":"ucitel", "type":"role"},
+    {"_id":"idR-2", "name":"student", "type":"role"},
+    {"_id":"idR-3", "name":"vedouci katedry", "type":"role"}
+    ]
+    return(datarole)
 
-import random
-import string
-
-defaultStrs = {'name': 'user_', 'group': 'group_'}
-defaultNums = {'phone': (602000000, 777999999)}
-extraFields = {'street': '', 'city': '', 'primarySchool': '', 'secondarySchool': ''}
-nums = {**defaultNums, 'age': (15, 80), 'incomeY': (300000, 1500000), 'actualDebt': (0, 10000000)}
-
-def randomString(prefix='', N=8):
-    return prefix + ''.join(random.choices(string.ascii_uppercase, k=N))
-
-def randomDocument(strs=defaultStrs, nums=defaultNums):
-    result = {}
-    for key, value in strs.items():
-        result[key] = randomString(value)
-        #result[key] = value
-    for key, value in nums.items():
-        result[key] = random.randint(value[0], value[1])
-    return result
-
-def heterogenizeDocument(doc, **values):
-    result = {**doc}
-    for key, value in values.items():
-        if random.random() < 0.5:
-            result[key] = randomString(key+'_')
-    return result
-
-def getFullRndDoc():
-    return heterogenizeDocument(randomDocument(defaultStrs, nums), **extraFields)
+def GroupDataFun():
+    datagroup=[
+    {"_id":"Group-all-users", "name":"All Users", "type":"group", "members":[],"groupType":["idGrT-0"]}
+    ]
+    return(datagroup)
