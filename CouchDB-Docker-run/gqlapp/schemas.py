@@ -84,7 +84,7 @@ class CreateUser(graphene.Mutation):
 
     def mutate(parent, info, userC=None):
         user_list = {}
-        user_listdef={"_id":"defultID", "type":"user", "name": "defaultname", "surname": "defaultsurname","address":"defAdress","email":"def@email.com", "groups":[{"grpid":"Group-all-users", "grprole":"idR-0"}],"publish_date": ""} #, "publish_date": "" + datetime.now + "" 
+        user_listdef={"_id":"defultID", "type":"user", "name": "defaultname", "surname": "defaultsurname","address":"defAdress","email":"def@email.com", "groups":[{"grpid":"Group-all-users", "grprole":["idR-0"]}],"publish_date": ""} #, "publish_date": "" + datetime.now + "" 
         user_list=user_listdef.copy()
         user_list.update(userC)
         res=insert_document(user_list)
@@ -172,7 +172,7 @@ class AddUserToGroup(graphene.Mutation):
             #groupupdate=update_group_members(groupID, userID)
             return AddUserToGroup(ok=True, result=addgroup)
         except:
-            rs={"_id":"------ERROR-------", "name":"!!!!!! does NOT exist exception !!!!!", "surname":" USERid // GROUPid or GroupRole for user ! --> does NOT exist!!!! "}
+            rs={"_id":"------ERROR-----details_in_name_and_surname----", "name":"!!!!!! does NOT exist exception !!!!!", "surname":" USERid // GROUPid or GroupRole for user ! --> does NOT exist!!!! "}
             return AddUserToGroup(ok=True, result=rs)
 
             

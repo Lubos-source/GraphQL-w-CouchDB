@@ -16,7 +16,7 @@ class UsrType(graphene.ObjectType):
     groups = List(lambda: Group)   #???? neco takoveho asi :)
     
     #{"_id": "ID", "_rev": "......", "type": "user", "name": "NAME", "surname": "SURNAME", "address": "ADRESA", \
-    # "email": "EMAIL@email.cz", "groups": [{"grpid": "ID1", "grprole":"idR1",},{"grpid": "ID2", "grprole":"idR2",},...],"publish_date": "2022-06-02 18:59:36.778196"}
+    # "email": "EMAIL@email.cz", "groups": [{"grpid": "ID1", "grprole":["idR1",]},{"grpid": "ID2", "grprole":["idR2",]},...],"publish_date": "2022-06-02 18:59:36.778196"}
 
     #grprole=id role v dane skupině
 

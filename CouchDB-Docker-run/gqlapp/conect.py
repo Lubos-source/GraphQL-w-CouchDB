@@ -58,13 +58,6 @@ db=create_database('funkcetest',0)				#
 #################################################
 
 
-"""
-def insert_random_data():
-	result= db.testovaci_databaze.insert_many(
-		[getFullRndDoc() for i in range(6)]
-	)
-"""
-
 def print_all(type):
 	vysledek={}
 	n=1
@@ -88,50 +81,33 @@ def print_all(type):
 	return vysledek
 
 def insert_document(dokum):
-	#documentid=docID
 	document=dokum
 	ajdi=document['_id']
 	if ajdi in db:
-		#print("\nDokument s ID '"+ajdi+"' jiz existuje v databazi '"+ str(db)+"'")
 		r=find_first(ajdi)
 		result=r.copy()
 		result.update({'_id': ajdi +"  + info : (Prvek jiz existuje v databazi)"})
 	else:
-		#print("\nVkladam dokument '"+ ajdi +"' do databaze '"+ str(db)+"'")
 		document['publish_date']=str(datetime.now())
 		db.save(document)
 		ajdi=document['_id']
 		result= find_first(ajdi)
 
-		#db["Group-all-users"]
-		#if (dokum["type"]!="group"):
-		#	update_group_members("Group-all-users",ajdi)
-
 	return result
 
-def insert_pymodel(ttl="testdefault"):
-	#person=UserDataInput(_id="id#"+str(datetime.now())+"#id",name=ttl, surname="42", address="adresa 15/666", email= ttl+"email@default.com")
-	#person.store(db)
-	return 0
-	
 def update_user(updateDoc,docid):
-	####UPDATE DOCUMENT####	#komentare zatim nechavam, kdyby me napadl jiny zpusob pomoci nacteni(load), zemny a ulozeni (store)... ale zatim takhle :)
 	if(db[docid]["type"]=="user"):
 
 		puvodni={}
 		doc=db[docid]
 		for row in doc:
 				puvodni[str(row)] = (doc[row])
-		#print("Puvodni dict: ", puvodni)
 		vysledek=puvodni.copy()
 		vysledek.update(updateDoc)
 		db.save(vysledek)										#nevyhoda muze ulozit i neco navic.... pokud vlozi nejaky dalsi klic do update dictionary....
-		updater = UserDataInput.load(db, docid)
-		#print("Data Po UPDATE: ", updater)
 	return 1
 
 def update_user_group(docid, groupID, grproleID):
-	#print("user ", db[docid]['_id'], " group ", db[groupID]['_id'], "grprole: ", grproleID)
 	if (((db[docid]['_id'] in db) and (db[docid]["type"]=="user")) and ((db[groupID]['_id'] in db) and (db[groupID]["type"]=="group"))and(db[grproleID]['_id'] in db)):
 		puvodni={}
 		grpuvodni=[]
@@ -141,22 +117,33 @@ def update_user_group(docid, groupID, grproleID):
 		vysledek=puvodni.copy()
 
 		for grup in vysledek["groups"]:
-			#print("Group ID: ", grup)
+			role={}						#{"Gid":[role,role,...]}
 			grpuvodni.append(grup["grpid"])
-			#print("Group puvodni ID: ", grpuvodni["_id"])
-		#grpuvodni.append(groupID)
-		vysledek["groups"].append({"grpid":groupID, "grprole":grproleID}) if groupID not in grpuvodni else vysledek["groups"]
-		#print("debug 1 ")
-		#vysledek["groups"].append(grpuvodni) if grpuvodni["_id"] not in grupy else vysledek["groups"]
+			print("prazdna role: ", role)
+			for grprole in grup["grprole"]:
+				print("for grprole in grup: ", grprole)
+				print("grpid: ", grup["grpid"] )
+				role[grup["grpid"]]=grup["grprole"].append(grprole) if grprole not in grup["grprole"] else grup["grprole"]
+				print("role grpid: ", role[grup["grpid"]])
+			print("role: ", role)
+		if groupID not in grpuvodni:
+			print("grpID neni u USERA :  ", groupID, "puvodni: ", puvodni)
+			vysledek["groups"].append({"grpid":groupID, "grprole":[grproleID]})
+			print("vysledek :  ", vysledek)
+		elif groupID in grpuvodni:
+			print("grpID uz existuje u USERA :  ", groupID, "puvodni: ", puvodni)
+			for grp in vysledek["groups"]:
+				print("grp in vys[groups]  ", grp)
+				if grp["grpid"]==groupID:
+					grp["grprole"].append(grproleID) if grproleID not in grp["grprole"] else grp["grprole"]
+			print("vysledek :  ", vysledek)
+
 		db.save(vysledek)
-		#print("debug 2 ")
 		update_group_members(groupID, docid)
-		#print("debug 3 ")
 	return(find_first(docid))
 
 
 def update_group_members(groupID, userID):
-	#print("\n---------------provadim funkci UPDATE GROUP!!!--------\n")
 	if ((db[userID]['_id'] in db) and (db[groupID]['_id'] in db)):
 		puvodni={}
 		membpuvodni=[]
@@ -167,52 +154,32 @@ def update_group_members(groupID, userID):
 		for mem in vysledek["members"]:
 			membpuvodni.append(mem)
 		vysledek["members"].append(userID) if userID not in membpuvodni else vysledek["members"]
-		#vysledek["members"].append(memb) if memb["_id"] not in membersarray else vysledek["members"]
 		db.save(vysledek)
 		
-
-	#return 0
-
-def del_documents():
-	#print("\nodstranuji veskere dokumenty v databazi '"+str(db)+"' ...")
-	
-	for dok in db:
-		#dint=int(dok)
-		#db.delete(dint)
-		del db[dok]
-		#print("'"+dok + "' uspesne odstranen !")
 
 def del_doc(docid):
 	vysledek={}
 	if ((docid in db)and(db[docid]["type"]=="user")):
 		doc=db[docid]
 		newlistgrp=db[docid]["groups"]
-		#print("list vsech skupin: ", newlistgrp)
 		for grp in newlistgrp:
 			newlistmembers=db[grp["grpid"]]["members"]
 			newlistmembers.remove(docid)
-			#print("po list: ", newlistmembers)
 			novy=db[grp["grpid"]]
 			novy["members"]=newlistmembers
-			#print("ukladam : ", str(novy))
 			db.save(novy)
-		#print("PO remove list + UPDATE : ", db[skupina]["members"])
 		db.delete(doc)
 
 	elif((docid in db)and(db[docid]["type"]=="group")): #Mozna dodelat podminku aby nemohl odstranit def skupinu pro vsechny users (Group-all-users) ?
 		for member in db[docid]["members"]:
 			newlistgrps=db[member]["groups"]
-			#print("pred remove list: ", newlistgrps)
 			for i in range(len(newlistgrps)):
 				if (newlistgrps[i]['grpid'] == docid):
 					del newlistgrps[i]
 					break
-			#newlistgrps.remove(docid)
-			#print("---Po remove list: ", newlistgrps)
 			novy=db[member]
 			novy["groups"]=newlistgrps
 			db.save(novy)
-			#print("PO remove list + UPDATE : ", db[member]["groups"])
 		db.delete(db[docid])
 
 	else:
@@ -330,7 +297,7 @@ def find_first(docname):
 
 
 
-#-------program-databaze-testing--------#
+#-------program-databaze-add-default-data--------#
 
 
 dataGRPtype=GroupTypeDataFun()
@@ -349,29 +316,3 @@ print("role type data vlozena! ")
 for data in dataGroup:
 	insert_document(data)
 print("Def Group ulozeny do dbs")
-
-
-#db=create_database('funkcetest', 0) #('nazevdatabaze', 1-zapnuti komentare)
-#insert_pymodel("Johny")
-#insert_pymodel("test")
-#insert_pymodel()
-#insert_pymodel('funkcetest')
-#insert_document(db,'dokumentID')
-
-#update_user(db,"updatedoc")
-
-#zkouska=print_all()
-
-#print("Zkouska DICTIONARY:\n", zkouska) #funguje 
-
-#find_first("faffe2acc80cce5bf5d747dda1004dd1")
-
-#del_documents(db)
-
-
-####TODO:
-#get user by email ?
-#get users by name ? (list of users with same name)
-#relation between user and group and group type (zkusit jen ID do listu a při query použit funkci find(ID), kter doplní obejkt podle uloženého ID 
-#PRINT ALL upravit aby query precetlo list IDs a vratilo jejich objekt ! 01.06.2022
-
