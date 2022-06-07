@@ -117,15 +117,8 @@ def update_user_group(docid, groupID, grproleID):
 		vysledek=puvodni.copy()
 
 		for grup in vysledek["groups"]:
-			role={}						#{"Gid":[role,role,...]}
 			grpuvodni.append(grup["grpid"])
-			print("prazdna role: ", role)
-			for grprole in grup["grprole"]:
-				print("for grprole in grup: ", grprole)
-				print("grpid: ", grup["grpid"] )
-				role[grup["grpid"]]=grup["grprole"].append(grprole) if grprole not in grup["grprole"] else grup["grprole"]
-				print("role grpid: ", role[grup["grpid"]])
-			print("role: ", role)
+
 		if groupID not in grpuvodni:
 			print("grpID neni u USERA :  ", groupID, "puvodni: ", puvodni)
 			vysledek["groups"].append({"grpid":groupID, "grprole":[grproleID]})
