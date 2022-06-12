@@ -1,0 +1,29 @@
+version: '3.1'
+
+services:
+  couch:
+    image: apache/couchdb
+    restart: always
+    ports:
+      - 31111:5984
+    environment:
+      COUCHDB_USER: admin
+      COUCHDB_PASSWORD: admin
+      COUCHDB_DB: data
+    volumes:
+      - ${CD}/couchdata:/opt/couchdb/data
+      - ${CD}/couchinit:/opt/couchdb/etc/local.d
+  app:
+    image: python_fastapi
+    build:
+      context: ./gqlapp
+    environment: 
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=admin
+      - COUCHDB_DB=data
+    ports:
+      - 32222:8000
+    volumes:
+      - ./gqlapp:/app
+    depends_on:
+      - couch

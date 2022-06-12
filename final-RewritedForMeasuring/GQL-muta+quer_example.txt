@@ -1,0 +1,170 @@
+query
+  { 
+    person(id:"idUsr-1")
+    {
+        name
+        surname
+        age
+        membership{
+            roleType{
+              name
+            }
+            group{
+              name
+            }
+      }
+  }
+}
+
+
+query{
+  group(id:"idGrp-1"){
+    members{
+
+      name
+      surname
+      age
+      membership{
+        group{
+          name
+        }
+        roleType{
+          name
+        }
+      }
+    }
+  }
+}
+
+
+query{
+  groupType(id:"idGrpType-3"){
+    name
+  }
+}
+
+
+query{
+  roleType(id:"idRol-2"){
+    name
+  }
+}
+
+
+
+mutation{
+ createRoleType(name:"RoleTEST"){
+  roleType{
+    name
+  }
+}
+}
+
+
+mutation{
+ createGroupType(name:"GrpTypeTEST"){
+  groupType{
+    name
+  }
+}
+}
+
+
+mutation{
+  createGroup(name:"TESTGroup", groupTypeID:"idGrpType-2"){
+    group{
+      name
+    }
+  }
+}
+
+
+mutation{
+  createPerson(name:"Testovaci",surname:"Manik",age:"55"){
+    person{
+      name
+      surname
+      age
+    }
+  }
+}
+
+
+
+mutation{
+addUserToGroup(groupID:"idGrp-4",roleTypeID:"idRol-2",userID:"idUsr-5"){
+  person{
+    name
+    surname
+    age
+  }
+  
+}
+}
+
+
+mutation{
+  updatePerson(id:"idUsr-1",name:"ZmenaJmena",age:"666"){
+    person{
+      name
+      surname
+      age
+    }
+  }
+}
+
+
+mutation{
+updateGroup(id:"idGrp-1",groupTypeID:"idGrpType-3",name:"ZmenaypuJMENO"){
+  group{
+    name
+    groupType{
+      name
+    }
+  }
+}
+}
+
+
+mutation{
+updateRoleType(id:"idRol-3",name:"ZmenaJmenaRole"){
+  roleType{
+    name
+  }
+}
+}
+
+
+
+mutation{
+delPerson(id:"idUsr-7"){
+  status
+	}
+}
+
+
+
+
+mutation{
+delGroup(id:"idGrp-7"){
+  status
+}
+}
+
+
+
+mutation{
+delGroupType(id:"idGrpType-3"){
+  status
+}
+}
+
+
+
+mutation{
+delRoleType(id:"idRol-2"){
+  status
+}
+}
+
+
