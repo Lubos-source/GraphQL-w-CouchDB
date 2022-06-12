@@ -9,6 +9,11 @@
 <br/>
 
 - Dodělat UpdateUser chybovou hlasku - při nenalezeni bud vytvorit prvek se vsema potrebnema informacemi nebo napsat chybovou hlasku, ze update nejde udelat protoze prvek neexistuje !
+<br/>
+
+- Předělat projekt aby byl stejný výstup pro měření !
+- Vyřešeno : podle předlohy jiného projektu překopaný celý projekt....
+<br/>
 
 ### Úkoly
 
@@ -45,6 +50,6 @@
 - [x] testování programu (docker databaze✔️, propojeni s databazi✔️, GQL docker✔️, query First_by_ID✔️, query allDocsFromDBS✔️, mutation createDocInDBS✔️, relations between Group/User all CRUDs✔️, debugGQLError ve funkcích✔️, mutace AddUserToGroup✔️, default Group pro users ✔️, ....)
 - [x] projektový den (7.4.2022) - Konzultace, ujasnění, instalace, zavedení do dockeru, odstranění docker-requirements chyby
 - [x] projektový den alfa verze (5.5.2022) - propojeni + docker, funkce na práci s dbs, kostra GQL
-- [ ] projektový den beta verze (8.6.2022)
+- [x] projektový den beta verze (8.6.2022) - Předvedení jednotlivých částí, domluva na společný výstup, ke kterému se připojí měření.
 - [ ] uzavření projektu (23.6.2022)
 
