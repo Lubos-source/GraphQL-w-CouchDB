@@ -160,7 +160,7 @@ class CreateRoleType(graphene.Mutation):
         roleType.AddToDB()
         return CreateRoleType(roleType=roleType)
 
-class AddUserToGroup(graphene.Mutation): # DODELAT podminku na duplicitu relations !!!!! (zatim muze byt relace uz-skupina DUPLICITNI !)
+class AddUserToGroup(graphene.Mutation): 
     group = graphene.Field(Group)
     person = graphene.Field(Person)
 

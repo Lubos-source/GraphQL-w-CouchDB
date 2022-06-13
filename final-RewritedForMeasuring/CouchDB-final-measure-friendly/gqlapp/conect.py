@@ -122,10 +122,26 @@ class Group:
 
     def AddMember(self, member_id, roleType_id):
         grpID=self.id
-        if((grpID in db)&(member_id in db)):
-            newid="idRelat-"+str(random.randrange(999999999999))+str(datetime.timestamp(datetime.now())).replace(".","T")+str(random.randrange(999999999999))
-            data={"_id":newid, "users_id":str(member_id), "groups_id":grpID, "roleType_id":roleType_id, "type":"relation"}
-            insert_document(data)
+        exist=0
+        existedidofRelat=""
+        if((grpID in db)&(member_id in db)&(roleType_id in db)):
+            for doc in db:
+                try:
+                    if((db[doc]["type"]=="relation")&(db[doc]["groups_id"]==grpID)&(db[doc]["users_id"]==member_id)&(db[doc]["roleType_id"]==roleType_id)):
+                        exist=1
+                        existedidofRelat=db[doc]["_id"]
+                        break
+                    else:
+                        exist=0
+                except:
+                    pass
+            if(exist==0):
+                newid="idRelat-"+str(random.randrange(999999999999))+str(datetime.timestamp(datetime.now())).replace(".","T")+str(random.randrange(999999999999))
+                data={"_id":newid, "users_id":str(member_id), "groups_id":grpID, "roleType_id":roleType_id, "type":"relation"}
+                insert_document(data)
+            if(exist==1):
+                find_first(existedidofRelat)
+					
 
     def RemoveMember(self, member_id):
         for doc in db:
@@ -260,7 +276,8 @@ class Person:
 			"_id":None,
 			"name":str(self.name),
 			"surname":str(self.surname),
-			"age":str(self.age)
+			"age":str(self.age),
+            "type":"user"
 		}
 		self.id="idUsr-"+str(random.randrange(999999999999))+str(datetime.timestamp(datetime.now())).replace(".","T")+str(random.randrange(999999999999))
 		data["_id"]=self.id
