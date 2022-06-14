@@ -11,7 +11,7 @@ from datetime import datetime
 dbname=DB_Name_To_Create
 
 class Person(graphene.ObjectType):
-    _id = String()
+    id = String()
     type="user"
     name = String()
     surname = String()
@@ -25,7 +25,7 @@ class Person(graphene.ObjectType):
 
 
 class Group(graphene.ObjectType):
-    _id=String()                     
+    id=String()                     
     type="group"
     name=String()
    
@@ -42,13 +42,13 @@ class Group(graphene.ObjectType):
 
 
 class GroupType(graphene.ObjectType):
-    _id=String()                    
+    id=String()                    
     type="group_type"
     name=String()
 
 
 class RoleType(graphene.ObjectType):
-    _id=String()                    
+    id=String()                    
     type="role_type"
     name=String()
 

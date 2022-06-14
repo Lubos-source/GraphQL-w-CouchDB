@@ -1,4 +1,0 @@
-{
-  "connectionstring": "postgresql+psycopg2://admin:admin@postgres:31111/data"
-
-}

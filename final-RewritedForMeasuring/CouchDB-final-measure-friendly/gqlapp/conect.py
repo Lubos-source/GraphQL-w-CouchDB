@@ -40,7 +40,7 @@ def connectToDatabase(dbname):
 		return({"message":"Database doesnt exist, please use create_database(DB_Name) FIRST!"})
 #################################################
 ## vytvoreni databaze							#
-db=create_database(DB_Name_To_Create,0)				#
+db=create_database(DB_Name_To_Create,0)			#
 #################################################
 
 
@@ -58,8 +58,8 @@ def insert_document(dokument_data):
 		result= find_first(doc['_id'])
 	return result
 
-def del_doc(docid):
-	db.delete(docid)
+def del_doc(doc):
+	db.delete(doc)
 
 def find_first(docid):	
 	vysledek=db.get(docid)
@@ -113,11 +113,13 @@ class Group:
     def AddtoDB(self):
         data={
             "_id":None,
+            "id":None,
             "name":str(self.name),
             "groupType":str(self.groupType)
         }
         self.id="idGrp-"+str(random.randrange(999999999999))+str(datetime.timestamp(datetime.now())).replace(".","T")+str(random.randrange(999999999999))
         data["_id"]=self.id
+        data["id"]=data["_id"]
         insert_document(data)
 
     def AddMember(self, member_id, roleType_id):
@@ -137,7 +139,7 @@ class Group:
                     pass
             if(exist==0):
                 newid="idRelat-"+str(random.randrange(999999999999))+str(datetime.timestamp(datetime.now())).replace(".","T")+str(random.randrange(999999999999))
-                data={"_id":newid, "users_id":str(member_id), "groups_id":grpID, "roleType_id":roleType_id, "type":"relation"}
+                data={"_id":newid, "id":newid, "users_id":str(member_id), "groups_id":grpID, "roleType_id":roleType_id, "type":"relation"}
                 insert_document(data)
             if(exist==1):
                 find_first(existedidofRelat)
@@ -188,10 +190,12 @@ class GroupType:
 	def AddToDB(self):
 		data={
 			"_id":None,
+			"id":None,
 			"name":str(self.name)
 		}
 		self.id="idGrpType-"+str(random.randrange(999999999999))+str(datetime.timestamp(datetime.now())).replace(".","T")+str(random.randrange(999999999999))
 		data["_id"]=self.id
+		data["id"]=data["_id"]
 		insert_document(data)
 
 	def UpdateData(self):
@@ -274,6 +278,7 @@ class Person:
 	def AddToDB(self):
 		data={
 			"_id":None,
+			"id":None,
 			"name":str(self.name),
 			"surname":str(self.surname),
 			"age":str(self.age),
@@ -281,6 +286,7 @@ class Person:
 		}
 		self.id="idUsr-"+str(random.randrange(999999999999))+str(datetime.timestamp(datetime.now())).replace(".","T")+str(random.randrange(999999999999))
 		data["_id"]=self.id
+		data["id"]=data["_id"]
 		insert_document(data)
 
 	def UpdateData(self):
@@ -321,10 +327,12 @@ class RoleType:
     def AddToDB(self):
         data={
             "_id":None,
+            "id":None,
             "name":str(self.name)
         }
         self.id="idRol-"+str(random.randrange(999999999999))+str(datetime.timestamp(datetime.now())).replace(".","T")+str(random.randrange(999999999999))
         data["_id"]=self.id
+        data["id"]=data["_id"]
         insert_document(data)
 
     def UpdateData(self):
@@ -355,21 +363,41 @@ dataRelationLoad=Relations()
 
 print(".............vkladam data do databaze.............")
 for data in dataPersonLoad:
-	insert_document(data)
+    if "_id" in data:
+        insert_document(data)
+    else:
+        data["_id"]=data["id"]
+        insert_document(data)
 print("Persons data vlozena! ")
 
 for data in dataRoleLoad:
-	insert_document(data)
+    if "_id" in data:
+        insert_document(data)
+    else:
+        data["_id"]=data["id"]
+        insert_document(data)
 print("Roles data vlozena! ")
 
 for data in dataGroupLoad:
-	insert_document(data)
+    if "_id" in data:
+        insert_document(data)
+    else:
+        data["_id"]=data["id"]
+        insert_document(data)
 print("Group ulozeny do dbs")
 
 for data in dataGroupTypesLoad:
-	insert_document(data)
+    if "_id" in data:
+        insert_document(data)
+    else:
+        data["_id"]=data["id"]
+        insert_document(data)
 print("Group types ulozeny do dbs")
 
 for data in dataRelationLoad:
-	insert_document(data)
+    if "_id" in data:
+        insert_document(data)
+    else:
+        data["_id"]=data["id"]
+        insert_document(data)
 print("Relations vytvoreny v dbs")
